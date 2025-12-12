@@ -12,19 +12,16 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'TT Gertika', system-ui, -apple-system, sans-serif;
             background: white;
             overflow: hidden;
         }
-
         .container {
             display: flex;
             flex-direction: column;
             height: 100vh;
         }
-
         header {
             display: flex;
             justify-content: space-between;
@@ -32,594 +29,292 @@
             padding: 12px 16px;
             border-bottom: 1px solid #f0f0f0;
             z-index: 100;
+            background: white;
         }
-
         .back-btn {
             font-size: 24px;
             cursor: pointer;
             background: none;
             border: none;
             color: #000;
+            padding: 8px;
+            display: none;
         }
-
         .header-title {
             font-size: 20px;
             font-weight: bold;
             color: #000;
-            text-align: center;
             flex: 1;
+            text-align: center;
         }
-
-        .profile-btn {
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .profile-avatar {
             width: 40px;
             height: 40px;
             border-radius: 50%;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: white;
+            font-weight: bold;
+            overflow: hidden;
         }
-
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .profile-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #000;
+        }
+        .profile-username {
+            font-size: 12px;
+            color: #999;
+        }
+        .nav-bar {
+            display: flex;
+            border-bottom: 1px solid #f0f0f0;
+            background: white;
+        }
+        .nav-item {
+            flex: 1;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #999;
+            border-bottom: 3px solid transparent;
+        }
+        .nav-item.active {
+            color: #000;
+            border-bottom-color: #FF0000;
+        }
         .content {
             flex: 1;
             overflow-y: auto;
-            padding-top: 60px;        }
-
-        .welcome-screen {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            padding: 20px;
-            text-align: center;
         }
-
-        .welcome-title {
-            font-size: 32px;
-            font-weight: bold;
-            margin-bottom: 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .screen {
+            display: none;
         }
-
-        .welcome-text {
-            font-size: 16px;
-            color: #666;
-            max-width: 300px;
-            line-height: 1.6;
+        .screen.active {
+            display: block;
         }
-
-        .categories-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 16px;
+        .important-item, .category-item, .topic-item {
             padding: 16px;
-        }
-
-        .category-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px;
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
+            border-bottom: 1px solid #f0f0f0;
             cursor: pointer;
-            transition: all 0.3s ease;
-            overflow: hidden;
-            position: relative;
-            height: 120px;
         }
-
-        .category-card:hover {
-            border-color: #667eea;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+        .important-item {
+            background: #f9f9f9;
+            margin: 16px;
+            border-radius: 8px;
+            border-bottom: none;
         }
-
-        .category-info {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: center;
-            flex: 1;
-            z-index: 2;
-        }
-
-        .category-title {
-            font-size: 18px;
-            font-weight: bold;
+        .important-item-title, .category-title, .topic-title {
+            font-size: 14px;
+            font-weight: 600;
             color: #000;
             margin-bottom: 4px;
         }
-
-        .category-count {
-            font-size: 14px;
-            color: #999;
-        }
-
-        .category-image {
-            width: 100px;
-            height: 120px;
-            object-fit: cover;
-            position: absolute;
-            right: 0;
-            top: 0;
-            opacity: 1;
-            mask-image: linear-gradient(to left, transparent 0%, black 60%);
-            -webkit-mask-image: linear-gradient(to left, transparent 0%, black 60%);
-        }
-
-        .files-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-            padding: 16px;
-        }
-
-        .file-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px;
-            background: #f8f8f8;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-        }
-
-        .file-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 1;
-        }
-
-        .file-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-        }
-
-        .file-details {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .file-name {
-            font-size: 14px;
-            font-weight: 500;
-            color: #000;
-            word-break: break-word;
-        }
-
-        .file-size {
+        .important-item-desc, .category-count, .topic-preview {
             font-size: 12px;
             color: #999;
         }
-
-        .file-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .file-btn {
-            width: 36px;
-            height: 36px;
-            border: none;
-            border-radius: 6px;
-            background: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            transition: all 0.3s ease;
-        }
-
-        .file-btn:hover {
-            background: #e8e8e8;
-        }
-
-        .view-btn {
-            color: #667eea;
-        }
-
-        .download-btn {
-            color: #764ba2;
-        }
-
-        .bottom-nav {
-            position: fixed;
-            top: 0;            left: 0;
-            right: 0;
-            display: flex;
-            background: white;
-            border-top: 1px solid #f0f0f0;
-            height: 60px;
-            z-index: 200;
-        }
-
-        .nav-tab {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: #999;
-            font-size: 12px;
-            gap: 4px;
-        }
-
-        .nav-tab.active {
-            color: #667eea;
-        }
-
-        .nav-icon {
-            font-size: 24px;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 300;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 12px;
-            width: 90%;
-            height: 90%;
-            overflow: auto;
-            position: relative;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 20px;
-            z-index: 301;
-        }
-
-        .pdf-viewer {
-            width: 100%;
-            height: 100%;
-        }
-
-        .image-viewer {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .image-viewer img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-
-        .video-viewer {
-            width: 100%;
-            height: 100%;
-        }
-
-        .video-viewer video {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .loading {
+        .loading, .empty-state {
             text-align: center;
-            padding: 40px 20px;
+            padding: 32px 16px;
             color: #999;
+        }
+        .topic-content {
+            padding: 16px;
+            line-height: 1.6;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <button class="back-btn" onclick="goBack()" id="backBtn" style="visibility: hidden;">←</button>
+            <button class="back-btn" id="backBtn">← Назад</button>
             <div class="header-title">АТИКАТ</div>
-            <button class="profile-btn" onclick="showProfile()">👤</button>
+            <div class="profile-section">
+                <div class="profile-avatar" id="profileAvatar">?</div>
+                <div class="profile-info">
+                    <div class="profile-name" id="profileName">Пользователь</div>
+                    <div class="profile-username" id="profileUsername">@username</div>
+                </div>
+            </div>
         </header>
-
-        <div class="content" id="content">
-            <!-- Welcome Screen -->
-            <div id="welcomeScreen" class="welcome-screen">
-                <div class="welcome-title">Добро пожаловать!</div>
-                <div class="welcome-text">Выберите раздел в меню ниже, чтобы начать</div>
-            </div>
-
-            <!-- Categories -->
-            <div id="categoriesView" style="display: none;">
-                <div class="categories-grid" id="categoriesGrid"></div>
-            </div>
-
-            <!-- Files -->
-            <div id="filesView" style="display: none;">
-                <div class="files-grid" id="filesGrid"></div>
-            </div>
+        <div class="nav-bar">
+            <div class="nav-item active" data-nav="important">Важное</div>
+            <div class="nav-item" data-nav="topics">Топики</div>
         </div>
-
-        <div class="bottom-nav">
-            <div class="nav-tab active" onclick="showWelcome()">
-                <div class="nav-icon">👋</div>
-                <div>Welcome</div>
-            </div>
-            <div class="nav-tab" onclick="showCategories()">
-                <div class="nav-icon">📁</div>
-                <div>Категории</div>
-            </div>
+        <div class="content">
+            <div class="screen active" id="importantScreen"></div>
+            <div class="screen" id="topicsScreen"></div>
+            <div class="screen" id="topicsInCategoryScreen"></div>
+            <div class="screen" id="topicContentScreen"></div>
         </div>
     </div>
-
-    <div class="modal" id="fileModal">
-        <button class="modal-close" onclick="closeModal()">✕</button>
-        <div class="modal-content" id="modalContent"></div>
-    </div>
-
     <script>
         const SUPABASE_URL = 'https://fdvqlfmnppftzjvocbla.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkdnFsZm1ucHBmdHpqdm9jYmxhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDUwNTU5MzgsImV4cCI6MTk4NDY3MTkzOH0.Y_mQqJ3H-1N0qJ0K0qJ0K0qJ0K0qJ0K0qJ0K0qJ0K0';
-
-        const { createClient } = supabase;
-        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        let currentView = 'welcome';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkdnFsZm1ucHBmdHpqdm9jYmxhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1MDEyODAsImV4cCI6MjA4MTA3NzI4MH0.PX9t2L2zgg66JYSqv5nPyzCnZERY3lFEngIte5tIAUI';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const tg = window.Telegram.WebApp;
+        let currentView = 'important';
         let currentCategory = null;
-        let categories = [];
-        let files = [];
-
-        async function initApp() {
-            await Telegram.WebApp.ready();
-            Telegram.WebApp.expand();
-            
-            const user = Telegram.WebApp.initDataUnsafe.user;
-            if (user) {
-                await logUserSession(user);
-            }
-
-            await loadCategories();
-        }
-
-        async function logUserSession(user) {
-            try {
-                await supabaseClient.from('user_sessions').insert({
-                    user_id: user.id,
-                    username: user.username || '',
-                    first_name: user.first_name,
-                    visited_at: new Date().toISOString()
-                });
-            } catch (error) {
-                console.error('Error logging session:', error);
-            }
-        }
-
-        async function loadCategories() {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('categories')
-                    .select('*')
-                    .limit(3);
-
-                if (error) throw error;
-
-                categories = data || [];
-                renderCategories();
-            } catch (error) {
-                console.error('Error loading categories:', error);
-            }
-        }
-
-        function renderCategories() {
-            const grid = document.getElementById('categoriesGrid');
-            grid.innerHTML = '';
-
-            categories.forEach(cat => {
-                const card = document.createElement('div');
-                card.className = 'category-card';
-                
-
-                card.innerHTML = `
-                    ${imageHtml}
-                    <div class="category-info">
-                        <div class="category-title">${cat.name}</div>
-                                                    <div class="category-count">files</div>
-                    </div>
-                `;
-
-                card.onclick = () => openCategory(cat.id, cat.name);
-                grid.appendChild(card);
-            });
-        }
-
-        async function openCategory(categoryId, categoryName) {
-            currentCategory = categoryId;
-            await loadFiles(categoryId);
-            showFiles(categoryName);
-        }
-
-        async function loadFiles(categoryId) {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('files')
-                    .select('*')
-                    .eq('category_id', categoryId);
-
-                if (error) throw error;
-
-                files = data || [];
-                renderFiles();
-            } catch (error) {
-                console.error('Error loading files:', error);
-            }
-        }
-
-        function renderFiles() {
-            const grid = document.getElementById('filesGrid');
-            grid.innerHTML = '';
-
-            files.forEach(file => {
-                const card = document.createElement
-('div');
-                card.className = 'file-card';
-                
-                const getFileIcon = (filename) => {
-                    const ext = filename.split('.').pop().toLowerCase();
-                    const icons = {
-                        pdf: '\ud83d\udcc4',
-                        jpg: '\ud83d\uddf8\ufe0f',
-                        jpeg: '\ud83d\uddf8\ufe0f',
-                        png: '\ud83d\uddf8\ufe0f',
-                        svg: '\ud83d\uddf8\ufe0f',
-                        mp4: '\ud83c\udf9c',
-                        avi: '\ud83c\udf9c',
-                        mov: '\ud83c\udf9c',
-                        html: '\ud83c\udf10'
-                    };
-                    return icons[ext] || '\ud83d\udcc4';
-                };
-
-                card.innerHTML = `
-                    <div class="file-info">
-                        <div class="file-icon">${getFileIcon(file.file_name)}</div>
-                        <div class="file-details">
-                            <div class="file-name">${file.file_name}</div>
-                            <div class="file-size">${(file.file_size / 1024).toFixed(2)} KB</div>
-                        </div>
-                    </div>
-                    <div class="file-actions">
-                        <button class="file-btn view-btn" onclick="viewFile('${file.file_url}', '${file.file_name}')">👁️</button>
-                        <button class="file-btn download-btn" onclick="downloadFile('${file.file_url}', '${file.file_name}')">⬇️</button>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function viewFile(url, filename) {
-            const modal = document.getElementById('fileModal');
-            const ext = filename.split('.').pop().toLowerCase();
-            let content = '';
-
-            if (['jpg', 'jpeg', 'png', 'svg'].includes(ext)) {
-                content = `<div class="image-viewer"><img src="${url}" alt="${filename}"></div>`;
-            } else if (['mp4', 'avi', 'mov', 'webm'].includes(ext)) {
-                content = `<div class="video-viewer"><video controls><source src="${url}"></video></div>`;
-            } else if (ext === 'pdf') {
-                content = `<iframe class="pdf-viewer" src="${url}" type="application/pdf"></iframe>`;
-            } else if (ext === 'html') {
-                content = `<iframe class="pdf-viewer" src="${url}"></iframe>`;
-            } else {
-                content = `<div class="loading">Unsupported file type</div>`;
-            }
-
-            document.getElementById('modalContent').innerHTML = content;
-            modal.classList.add('active');
-        }
-
-        function closeModal() {
-            document.getElementById('fileModal').classList.remove('active');
-        }
-
-        function downloadFile(url, filename) {
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        }
-
-        function showWelcome() {
-            currentView = 'welcome';
-            document.getElementById('welcomeScreen').style.display = 'flex';
-            document.getElementById('categoriesView').style.display = 'none';
-            document.getElementById('filesView').style.display = 'none';
-            document.getElementById('backBtn').style.visibility = 'hidden';
-            updateNavigation();
-        }
-
-        function showCategories() {
-            currentView = 'categories';
-            document.getElementById('welcomeScreen').style.display = 'none';
-            document.getElementById('categoriesView').style.display = 'block';
-            document.getElementById('filesView').style.display = 'none';
-            document.getElementById('backBtn').style.visibility = 'hidden';
-            updateNavigation();
-        }
-
-        function showFiles(categoryName) {
-            currentView = 'files';
-            document.getElementById('welcomeScreen').style.display = 'none';
-            document.getElementById('categoriesView').style.display = 'none';
-            document.getElementById('filesView').style.display = 'block';
-            document.getElementById('backBtn').style.visibility = 'visible';
-            document.querySelector('.header-title').textContent = categoryName;
-            updateNavigation();
-        }
-
-        function updateNavigation() {
-            const tabs = document.querySelectorAll('.nav-tab');
-            tabs.forEach((tab, index) => {
-                tab.classList.remove('active');
-                if ((index === 0 && currentView === 'welcome') ||
-                    (index === 1 && (currentView === 'categories' || currentView === 'files'))) {
-                    tab.classList.add('active');
+        let userData = null;
+        function init() {
+            if (tg.initDataUnsafe?.user) {
+                const user = tg.initDataUnsafe.user;
+                userData = user;
+                document.getElementById('profileName').textContent = user.first_name;
+                document.getElementById('profileUsername').textContent = '@' + (user.username || 'user');
+                if (user.photo_url) {
+                    document.getElementById('profileAvatar').innerHTML = `<img src="${user.photo_url}" alt="avatar">`;
+                } else {
+                    document.getElementById('profileAvatar').textContent = (user.first_name || 'U')[0];
                 }
-            });
+            }
+            setupEventListeners();
+            loadImportant();
         }
-
-        function goBack() {
-            if (currentView === 'files') {
-                showCategories();
+        function setupEventListeners() {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    const view = e.target.dataset.nav;
+                    switchView(view);
+                });
+            });
+            document.getElementById('backBtn').addEventListener('click', goBack);
+        }
+        function switchView(view) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.querySelector(`[data-nav="${view}"]`).classList.add('active');
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            if (view === 'important') {
+                loadImportant();
+                document.getElementById('importantScreen').classList.add('active');
+                document.getElementById('backBtn').style.display = 'none';
+                document.querySelector('.header-title').textContent = 'АТИКАТ';
+            } else if (view === 'topics') {
+                loadTopics();
+                document.getElementById('topicsScreen').classList.add('active');
+                document.getElementById('backBtn').style.display = 'none';
                 document.querySelector('.header-title').textContent = 'АТИКАТ';
             }
+            currentView = view;
         }
-
-        function showProfile() {
-            const user = Telegram.WebApp.initDataUnsafe.user;
-            if (user) {
-                alert(`👤 ${user.first_name}\nID: ${user.id}`);
+        async function loadImportant() {
+            const screen = document.getElementById('importantScreen');
+            screen.innerHTML = '<div class="loading">Загрузка...</div>';
+            try {
+                const { data } = await supabase.from('topics').select('*').eq('is_important', true).order('created_at', { ascending: false });
+                if (data?.length > 0) {
+                    screen.innerHTML = data.map(item => `
+                        <div class="important-item" onclick="selectTopic(${item.id})">
+                            <div class="important-item-title">${item.title}</div>
+                            <div class="important-item-desc">${(item.description || item.content || '').substring(0, 50)}...</div>
+                        </div>
+                    `).join('');
+                } else {
+                    screen.innerHTML = '<div class="empty-state">Нет важных топиков</div>';
+                }
+            } catch (e) {
+                screen.innerHTML = '<div class="empty-state">Ошибка загрузки</div>';
             }
         }
-
-        initApp();
+        async function loadTopics() {
+            const screen = document.getElementById('topicsScreen');
+            screen.innerHTML = '<div class="loading">Загрузка...</div>';
+            try {
+                const { data: categories } = await supabase.from('categories').select('*').order('name');
+                if (categories?.length > 0) {
+                    let html = '';
+                    for (const cat of categories) {
+                        const { count } = await supabase.from('topics').select('*', { count: 'exact', head: true }).eq('category_id', cat.id);
+                        html += `<div class="category-item" onclick="selectCategory(${cat.id}, '${cat.name}')">
+                            <div class="category-title">${cat.name}</div>
+                            <div class="category-count">${count || 0} топиков</div>
+                        </div>`;
+                    }
+                    screen.innerHTML = html;
+                } else {
+                    screen.innerHTML = '<div class="empty-state">Нет категорий</div>';
+                }
+            } catch (e) {
+                screen.innerHTML = '<div class="empty-state">Ошибка загрузки</div>';
+            }
+        }
+        async function selectCategory(catId, catName) {
+            currentCategory = catId;
+            const screen = document.getElementById('topicsInCategoryScreen');
+            screen.innerHTML = '<div class="loading">Загрузка топиков...</div>';
+            document.querySelector('.header-title').textContent = catName;
+            document.getElementById('backBtn').style.display = 'block';
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            try {
+                const { data: topics } = await supabase.from('topics').select('*').eq('category_id', catId).order('created_at', { ascending: false });
+                if (topics?.length > 0) {
+                    screen.innerHTML = topics.map(topic => `
+                        <div class="topic-item" onclick="selectTopic(${topic.id})">
+                            <div class="topic-title">${topic.title}</div>
+                            <div class="topic-preview">${(topic.description || topic.content || '').substring(0, 50)}...</div>
+                        </div>
+                    `).join('');
+                } else {
+                    screen.innerHTML = '<div class="empty-state">Нет топиков в этой категории</div>';
+                }
+                screen.classList.add('active');
+            } catch (e) {
+                screen.innerHTML = '<div class="empty-state">Ошибка загрузки</div>';
+                screen.classList.add('active');
+            }
+        }
+        async function selectTopic(topicId) {
+            const screen = document.getElementById('topicContentScreen');
+            screen.innerHTML = '<div class="loading">Загрузка...</div>';
+            document.getElementById('backBtn').style.display = 'block';
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            try {
+                const { data: topics } = await supabase.from('topics').select('*').eq('id', topicId);
+                const topic = topics?.[0];
+                if (topic) {
+                    screen.innerHTML = `
+                        <div class="topic-content">
+                            <h1 style="font-size: 24px; margin-bottom: 12px;">${topic.title}</h1>
+                            <p style="color: #999; font-size: 12px; margin-bottom: 24px;">${new Date(topic.created_at).toLocaleDateString('ru')}</p>
+                            <div style="font-size: 14px; line-height: 1.6;">${topic.content}</div>
+                        </div>
+                    `;
+                } else {
+                    screen.innerHTML = '<div class="empty-state">Топик не найден</div>';
+                }
+                screen.classList.add('active');
+            } catch (e) {
+                screen.innerHTML = '<div class="empty-state">Ошибка загрузки</div>';
+                screen.classList.add('active');
+            }
+        }
+        function goBack() {
+            if (currentCategory) {
+                currentCategory = null;
+                switchView(currentView);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
