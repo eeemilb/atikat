@@ -454,16 +454,12 @@
                 const card = document.createElement('div');
                 card.className = 'category-card';
                 
-                let imageHtml = '';
-                if (cat.image_url) {
-                    imageHtml = `<img src="${cat.image_url}" alt="" class="category-image">`;
-                }
 
                 card.innerHTML = `
                     ${imageHtml}
                     <div class="category-info">
                         <div class="category-title">${cat.name}</div>
-                        <div class="category-count">${cat.file_count || 0} файлов</div>
+                        <div class="category-count">"filesv>
                     </div>
                 `;
 
