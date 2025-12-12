@@ -26,7 +26,6 @@
             --color-pink: #ec4899;
             --radius: 12px;
             --shadow: 0 1px 3px rgba(0,0,0,0.1);
-            --font-title: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
 
         html, body {
@@ -42,16 +41,12 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
-            width: 100vw;
         }
 
         header {
-            padding: 0;
             background: var(--color-surface);
             border-bottom: 1px solid var(--color-border);
             box-shadow: var(--shadow);
-            display: flex;
-            flex-direction: column;
         }
 
         .header-top {
@@ -81,14 +76,13 @@
 
         .back-btn-header:hover {
             background: var(--color-bg);
-            border-color: var(--color-primary);
         }
 
         .title {
             font-size: 22px;
             font-weight: 700;
             color: var(--color-text);
-            font-family: var(--font-title);
+            font-family: 'Poppins', sans-serif;
             flex: 1;
             text-align: center;
         }
@@ -97,14 +91,6 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            cursor: pointer;
-            padding: 6px 10px;
-            border-radius: 6px;
-            transition: background 0.2s ease;
-        }
-
-        .user-profile:hover {
-            background: var(--color-bg);
         }
 
         .user-avatar {
@@ -123,17 +109,15 @@
         .user-info {
             display: flex;
             flex-direction: column;
-            font-size: 12px;
+            font-size: 11px;
         }
 
         .user-name {
             font-weight: 600;
-            color: var(--color-text);
         }
 
         .user-time {
             color: var(--color-text-light);
-            font-size: 11px;
         }
 
         .category-tabs {
@@ -142,7 +126,6 @@
             padding: 8px 16px;
             border-top: 1px solid var(--color-border);
             overflow-x: auto;
-            background: var(--color-surface);
         }
 
         .category-tab {
@@ -162,11 +145,6 @@
             background: var(--color-primary);
             border-color: var(--color-primary);
             color: white;
-        }
-
-        .category-tab:hover {
-            border-color: var(--color-primary);
-            color: var(--color-primary);
         }
 
         .content {
@@ -198,7 +176,6 @@
 
         .item-content {
             flex: 1;
-            min-width: 0;
         }
 
         .item-image {
@@ -213,10 +190,7 @@
             justify-content: center;
             color: white;
             font-size: 12px;
-            text-align: center;
             padding: 8px;
-            font-weight: 500;
-            position: relative;
         }
 
         .item-title {
@@ -224,15 +198,13 @@
             font-weight: 600;
             color: var(--color-text);
             margin-bottom: 6px;
-            word-break: break-word;
-            font-family: var(--font-title);
+            font-family: 'Poppins', sans-serif;
         }
 
         .item-description {
             font-size: 13px;
             color: var(--color-text-light);
             margin-bottom: 4px;
-            line-height: 1.4;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -247,7 +219,6 @@
         .detail-header {
             display: flex;
             gap: 20px;
-            align-items: flex-start;
             margin-bottom: 20px;
         }
 
@@ -260,15 +231,13 @@
             font-weight: 700;
             color: var(--color-text);
             margin-bottom: 8px;
-            word-break: break-word;
-            font-family: var(--font-title);
+            font-family: 'Poppins', sans-serif;
         }
 
         .detail-description {
             font-size: 14px;
             color: var(--color-text-light);
             margin-bottom: 8px;
-            line-height: 1.5;
         }
 
         .detail-date {
@@ -287,11 +256,7 @@
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 14px;
-            text-align: center;
             padding: 12px;
-            font-weight: 500;
-            position: relative;
         }
 
         .files-section {
@@ -316,15 +281,10 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 14px;
         }
 
         .file-item:last-child {
             border-bottom: none;
-        }
-
-        .file-item:hover {
-            background: var(--color-bg);
         }
 
         .file-info {
@@ -332,7 +292,6 @@
             align-items: center;
             gap: 10px;
             flex: 1;
-            min-width: 0;
         }
 
         .file-icon {
@@ -346,18 +305,11 @@
             color: white;
             font-size: 12px;
             font-weight: 600;
-            flex-shrink: 0;
-        }
-
-        .file-name {
-            flex: 1;
-            word-break: break-word;
         }
 
         .file-actions {
             display: flex;
             gap: 8px;
-            flex-shrink: 0;
         }
 
         .file-btn {
@@ -377,7 +329,6 @@
 
         .file-btn:hover {
             background: rgba(59, 130, 246, 0.1);
-            color: var(--color-primary);
         }
 
         .file-viewer {
@@ -409,9 +360,6 @@
             color: white;
             font-size: 16px;
             font-weight: 600;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
             flex: 1;
         }
 
@@ -426,12 +374,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .viewer-close:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
         }
 
         .viewer-content {
@@ -440,11 +382,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .pdf-viewer {
-            width: 100%;
-            height: 100%;
         }
 
         .image-viewer {
@@ -456,13 +393,6 @@
         .video-viewer {
             max-width: 90%;
             max-height: 90%;
-        }
-
-        .html-viewer {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: white;
         }
 
         .loading {
@@ -490,22 +420,8 @@
                 height: 150px;
             }
 
-            .header-top {
-                flex-wrap: wrap;
-            }
-
             .user-info {
                 display: none;
-            }
-
-            .user-avatar {
-                width: 28px;
-                height: 28px;
-                font-size: 12px;
-            }
-
-            .title {
-                font-size: 18px;
             }
         }
     </style>
@@ -516,7 +432,243 @@
             <div class="header-top">
                 <button class="back-btn-header" id="backBtnHeader" onclick="closeDetail()">← Назад</button>
                 <div class="title">АТИКАТ</div>
-                <div class="user-profile" id="userProfile">
+                <div class="user-profile">
                     <div class="user-avatar" id="userAvatar">👤</div>
                     <div class="user-info">
-                        <div class="user-name" id="userName">
+                        <div class="user-name" id="userName">Гость</div>
+                        <div class="user-time" id="userTime">сейчас</div>
+                    </div>
+                </div>
+            </div>
+            <div class="category-tabs" id="categoryTabs"></div>
+        </header>
+        <div class="content" id="content"></div>
+        <div class="file-viewer" id="fileViewer">
+            <div class="viewer-header">
+                <div class="viewer-title" id="viewerTitle">Просмотр файла</div>
+                <button class="viewer-close" onclick="closeFileViewer()">✕</button>
+            </div>
+            <div class="viewer-content" id="viewerContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // ============ SUPABASE CONFIG ============
+        const SUPABASE_URL = 'https://fdvqlfmnppftzjvocbla.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkdnFsZm1ucHBmdHpqdm9jYmxhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQwMDI4NTgsImV4cCI6MTc2NTUzODg1OH0.y2pLKxRwBQ5j8R3qxV8iUMvC5kqZ9mQtQlVZ2xQ-xNc';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let categories = [];
+        let items = [];
+        let currentItemId = null;
+        let currentCategoryId = null;
+
+        // ============ USER INIT ============
+        async function initUser() {
+            const user =
+
+            window.Telegram?.WebApp?.initDataUnsafe?.user || {};
+            const userName = user.first_name || 'Гость';
+            const userInitial = userName.charAt(0).toUpperCase();
+            
+            document.getElementById('userName').textContent = userName;
+            document.getElementById('userAvatar').textContent = userInitial;
+            
+            if (user.id) {
+                await logUserSession(user.id);
+            }
+        } catch (error) {
+            console.error('User init error:', error);
+        }
+        updateUserTime();
+        setInterval(updateUserTime, 60000);
+    }
+
+    function updateUserTime() {
+        const now = new Date();
+        const hours = now.getHours();
+        let timeStr = 'сейчас';
+        if (hours < 12) timeStr = 'Утро';
+        else if (hours < 18) timeStr = 'Днем';
+        else timeStr = 'Вечер';
+        document.getElementById('userTime').textContent = timeStr;
+    }
+
+    async function logUserSession(telegramId) {
+        try {
+            const { error } = await supabase
+                .from('user_sessions')
+                .insert([{
+                    telegram_id: telegramId,
+                    last_visit: new Date().toISOString()
+                }]);
+        } catch (error) {
+            console.log('Session logging skipped');
+        }
+    }
+
+    // ============ LOAD DATA ============
+    async function loadData() {
+        try {
+            const { data: catData } = await supabase
+                .from('categories')
+                .select('*')
+                .order('id');
+            
+            const { data: itemData } = await supabase
+                .from('items')
+                .select('*')
+                .order('id');
+            
+            categories = catData || [];
+            items = itemData || [];
+            
+            renderCategoryTabs();
+            renderMainView();
+        } catch (error) {
+            console.error('Load error:', error);
+            document.getElementById('content').innerHTML = '<div class="loading">Ошибка загрузки данных</div>';
+        }
+    }
+
+    // ============ RENDER TABS ============
+    function renderCategoryTabs() {
+        const tabsContainer = document.getElementById('categoryTabs');
+        tabsContainer.innerHTML = categories.map(cat => `
+            <button class="category-tab ${!currentCategoryId ? 'active' : ''}" 
+                    onclick="setCategory(${cat.id})">${cat.name}</button>
+        `).join('');
+    }
+
+    function setCategory(catId) {
+        currentCategoryId = catId;
+        document.querySelectorAll('.category-tab').forEach(tab => tab.classList.remove('active'));
+        event.target.classList.add('active');
+        renderMainView();
+    }
+
+    // ============ MAIN VIEW ============
+    function renderMainView() {
+        const content = document.getElementById('content');
+        const filtered = items.filter(item => !currentCategoryId || item.category_id === currentCategoryId);
+        
+        if (filtered.length === 0) {
+            content.innerHTML = '<div class="loading">Нет элементов в этой категории</div>';
+            return;
+        }
+        
+        content.innerHTML = filtered.map(item => `
+            <div class="item-card" onclick="openDetail(${item.id})">
+                <div class="item-content">
+                    <div class="item-title">${item.title}</div>
+                    <div class="item-description">${item.description}</div>
+                    <div class="item-date">Дата: ${item.date}</div>
+                </div>
+                <div class="item-image">📄</div>
+            </div>
+        `).join('');
+    }
+
+    // ============ DETAIL VIEW ============
+    function openDetail(id) {
+        currentItemId = id;
+        document.getElementById('backBtnHeader').classList.add('visible');
+        renderDetailView();
+    }
+
+    function renderDetailView() {
+        const item = items.find(i => i.id === currentItemId);
+        if (!item) return;
+
+        const content = document.getElementById('content');
+        content.innerHTML = `
+            <div class="detail-header">
+                <div class="detail-info">
+                    <div class="detail-title">${item.title}</div>
+                    <div class="detail-description">${item.description}</div>
+                    <div class="detail-date">Дата: ${item.date}</div>
+                </div>
+                <div class="detail-image">📄</div>
+            </div>
+            <div class="files-section">
+                <div class="files-title">Файлы (${(item.files || []).length})</div>
+                <div>
+                    ${(item.files || []).map((file, idx) => `
+                        <div class="file-item">
+                            <div class="file-info">
+                                <div class="file-icon">${String.fromCharCode(65 + (idx % 26))}</div>
+                                <div class="file-name">${file}</div>
+                            </div>
+                            <div class="file-actions">
+                                <button class="file-btn" title="Просмотреть" onclick="openFileViewer('${file}')">👁️</button>
+                                <button class="file-btn" title="Скачать" onclick="downloadFile('${file}')">⬇️</button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    function closeDetail() {
+        currentItemId = null;
+        document.getElementById('backBtnHeader').classList.remove('visible');
+        renderMainView();
+    }
+
+    // ============ FILE VIEWER ============
+    function getFileExtension(filename) {
+        return filename.split('.').pop().toLowerCase();
+    }
+
+    function openFileViewer(filename) {
+        const ext = getFileExtension(filename);
+        const viewer = document.getElementById('fileViewer');
+        const viewerContent = document.getElementById('viewerContent');
+        const viewerTitle = document.getElementById('viewerTitle');
+        
+        viewerTitle.textContent = filename;
+        viewerContent.innerHTML = '';
+        
+        const baseUrl = 'https://fdvqlfmnppftzjvocbla.supabase.co/storage/v1/object/public/files/';
+        const fileUrl = baseUrl + filename;
+        
+        if (['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(ext)) {
+            viewerContent.innerHTML = `<img src="${fileUrl}" class="image-viewer" alt="${filename}" />`;
+        } else if (['mp4', 'webm', 'mov', 'avi'].includes(ext)) {
+            viewerContent.innerHTML = `<video controls class="video-viewer"><source src="${fileUrl}" /></video>`;
+        } else if (ext === 'pdf') {
+            viewerContent.innerHTML = `<iframe src="${fileUrl}" class="pdf-viewer"></iframe>`;
+        } else if (['html', 'htm'].includes(ext)) {
+            viewerContent.innerHTML = `<iframe src="${fileUrl}" class="html-viewer"></iframe>`;
+        } else {
+            viewerContent.innerHTML = '<div style="color: white; text-align: center; padding: 40px;">Файл не поддерживается для просмотра</div>';
+        }
+        
+        viewer.classList.add('active');
+    }
+
+    function closeFileViewer() {
+        document.getElementById('fileViewer').classList.remove('active');
+    }
+
+    function downloadFile(filename) {
+        const baseUrl = 'https://fdvqlfmnppftzjvocbla.supabase.co/storage/v1/object/public/files/';
+        const fileUrl = baseUrl + filename;
+        const a = document.createElement('a');
+        a.href = fileUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    // ============ INIT ============
+    window.addEventListener('DOMContentLoaded', () => {
+        initUser();
+        loadData();
+    });
+</script>
+</body>
+</html>
