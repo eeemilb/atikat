@@ -4,821 +4,628 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>АТИКАТ</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-
-        :root {
-            --color-bg: #f5f5f5;
-            --color-surface: #ffffff;
-            --color-text: #1f2937;
-            --color-text-light: #6b7280;
-            --color-primary: #3b82f6;
-            --color-border: #e5e7eb;
-            --color-green: #10b981;
-            --color-blue: #3b82f6;
-            --color-pink: #ec4899;
-            --radius: 12px;
-            --shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        html, body {
-            width: 100%;
-            height: 100%;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Poppins', sans-serif;
-            background: var(--color-bg);
-            color: var(--color-text);
+        body {
+            font-family: 'TT Gertika', system-ui, -apple-system, sans-serif;
+            background: white;
             overflow: hidden;
         }
 
         .container {
-            width: 100%;
-            height: 100%;
             display: flex;
             flex-direction: column;
+            height: 100vh;
         }
 
         header {
-            padding: 0;
-            background: var(--color-surface);
-            border-bottom: 1px solid var(--color-border);
-            box-shadow: var(--shadow);
-        }
-
-        .header-top {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            padding: 12px 16px;
-            gap: 16px;
-        }
-
-        .back-btn-header {
-            padding: 8px 12px;
-            background: transparent;
-            border: 1px solid var(--color-border);
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            color: var(--color-text);
-            transition: all 0.2s ease;
-            font-size: 14px;
-            display: none;
-        }
-
-        .back-btn-header.visible {
-            display: block;
-        }
-
-        .back-btn-header:hover {
-            background: var(--color-bg);
-            border-color: var(--color-primary);
-        }
-
-        .title {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--color-text);
-            flex: 1;
-            text-align: center;
-            letter-spacing: 1px;
-        }
-
-        .user-profile {
-            display: flex;
             align-items: center;
-            gap: 8px;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            z-index: 100;
+        }
+
+        .back-btn {
+            font-size: 24px;
             cursor: pointer;
-            padding: 6px 10px;
-            border-radius: 6px;
-            transition: background 0.2s ease;
+            background: none;
+            border: none;
+            color: #000;
         }
 
-        .user-profile:hover {
-            background: var(--color-bg);
+        .header-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+            text-align: center;
+            flex: 1;
         }
 
-        .user-avatar {
-            width: 32px;
-            height: 32px;
+        .profile-btn {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .user-info {
-            display: flex;
-            flex-direction: column;
-            font-size: 12px;
-        }
-
-        .user-name {
-            font-weight: 600;
-            color: var(--color-text);
-        }
-
-        .user-time {
-            color: var(--color-text-light);
-            font-size: 11px;
-        }
-
-        .category-tabs {
-            display: flex;
-            gap: 8px;
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--color-border);
-            overflow-x: auto;
-        }
-
-        .category-tab {
-            padding: 8px 16px;
-            background: transparent;
-            border: 1px solid var(--color-border);
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--color-text-light);
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .category-tab:hover {
-            border-color: var(--color-primary);
-            color: var(--color-primary);
-        }
-
-        .category-tab.active {
-            background: var(--color-primary);
-            border-color: var(--color-primary);
-            color: white;
         }
 
         .content {
             flex: 1;
             overflow-y: auto;
-            padding: 16px;
+            padding-bottom: 60px;
         }
 
-        .item-card {
-            background: var(--color-surface);
-            border-radius: var(--radius);
-            padding: 16px;
-            margin-bottom: 12px;
-            display: flex;
-            gap: 16px;
-            cursor: pointer;
-            border: 1px solid var(--color-border);
-            transition: all 0.2s ease;
-            align-items: stretch;
-        }
-
-        .item-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            border-color: var(--color-primary);
-        }
-
-        .item-image {
-            width: 120px;
-            height: 100px;
-            background: linear-gradient(to left, rgba(102, 126, 234, 1) 0%, rgba(102, 126, 234, 0) 100%),
-                        linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 8px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 12px;
-            text-align: center;
-            padding: 8px;
-            font-weight: 500;
-            position: relative;
-        }
-
-        .item-content {
-            flex: 1;
+        .welcome-screen {
             display: flex;
             flex-direction: column;
-            justify-content: center;
-        }
-
-        .item-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--color-text);
-            margin-bottom: 6px;
-            word-break: break-word;
-        }
-
-        .item-description {
-            font-size: 13px;
-            color: var(--color-text-light);
-            margin-bottom: 6px;
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .item-date {
-            font-size: 12px;
-            color: var(--color-text-light);
-        }
-
-        .detail-header {
-            background: var(--color-surface);
-            border-radius: var(--radius);
-            padding: 16px;
-            margin-bottom: 16px;
-            display: flex;
-            gap: 16px;
-            align-items: flex-start;
-            border: 1px solid var(--color-border);
-        }
-
-        .detail-image {
-            width: 150px;
-            height: 150px;
-            background: linear-gradient(to left, rgba(102, 126, 234, 1) 0%, rgba(102, 126, 234, 0) 100%),
-                        linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 8px;
-            flex-shrink: 0;
-            display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 14px;
+            height: 100%;
+            padding: 20px;
             text-align: center;
-            padding: 12px;
-            font-weight: 500;
-            position: relative;
         }
 
-        .detail-info {
-            flex: 1;
+        .welcome-title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .detail-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--color-text);
-            margin-bottom: 8px;
-            word-break: break-word;
-        }
-
-        .detail-description {
-            font-size: 14px;
-            color: var(--color-text-light);
-            margin-bottom: 8px;
+        .welcome-text {
+            font-size: 16px;
+            color: #666;
+            max-width: 300px;
             line-height: 1.6;
         }
 
-        .detail-date {
-            font-size: 13px;
-            color: var(--color-text-light);
+        .categories-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            padding: 16px;
         }
 
-        .files-section {
-            background: var(--color-surface);
-            border-radius: var(--radius);
-            border: 1px solid var(--color-border);
-            overflow: hidden;
-        }
-
-        .files-title {
-            padding: 12px 16px;
-            background: var(--color-bg);
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--color-text);
-            border-bottom: 1px solid var(--color-border);
-        }
-
-        .file-item {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--color-border);
-            transition: all 0.2s ease;
+        .category-card {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            padding: 16px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+            height: 120px;
+        }
+
+        .category-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+        }
+
+        .category-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            flex: 1;
+            z-index: 2;
+        }
+
+        .category-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 4px;
+        }
+
+        .category-count {
             font-size: 14px;
+            color: #999;
         }
 
-        .file-item:last-child {
-            border-bottom: none;
+        .category-image {
+            width: 100px;
+            height: 120px;
+            object-fit: cover;
+            position: absolute;
+            right: 0;
+            top: 0;
+            opacity: 1;
+            mask-image: linear-gradient(to left, transparent 0%, black 60%);
+            -webkit-mask-image: linear-gradient(to left, transparent 0%, black 60%);
         }
 
-        .file-item:hover {
-            background: var(--color-bg);
+        .files-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            padding: 16px;
+        }
+
+        .file-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: #f8f8f8;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
         }
 
         .file-info {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             flex: 1;
-            min-width: 0;
         }
 
         .file-icon {
-            width: 24px;
-            height: 24px;
-            background: var(--color-primary);
-            border-radius: 4px;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 12px;
-            font-weight: 600;
-            flex-shrink: 0;
+            font-size: 20px;
+        }
+
+        .file-details {
+            display: flex;
+            flex-direction: column;
         }
 
         .file-name {
-            flex: 1;
+            font-size: 14px;
+            font-weight: 500;
+            color: #000;
             word-break: break-word;
-            color: var(--color-text);
+        }
+
+        .file-size {
+            font-size: 12px;
+            color: #999;
         }
 
         .file-actions {
             display: flex;
             gap: 8px;
-            flex-shrink: 0;
         }
 
         .file-btn {
-            width: 28px;
-            height: 28px;
+            width: 36px;
+            height: 36px;
             border: none;
-            background: transparent;
-            color: var(--color-primary);
+            border-radius: 6px;
+            background: white;
             cursor: pointer;
-            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
-            transition: all 0.2s ease;
+            font-size: 18px;
+            transition: all 0.3s ease;
         }
 
         .file-btn:hover {
-            background: rgba(59, 130, 246, 0.1);
+            background: #e8e8e8;
         }
 
-        .file-viewer {
+        .view-btn {
+            color: #667eea;
+        }
+
+        .download-btn {
+            color: #764ba2;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            background: white;
+            border-top: 1px solid #f0f0f0;
+            height: 60px;
+            z-index: 200;
+        }
+
+        .nav-tab {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #999;
+            font-size: 12px;
+            gap: 4px;
+        }
+
+        .nav-tab.active {
+            color: #667eea;
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        .modal {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 1000;
-            flex-direction: column;
-        }
-
-        .file-viewer.active {
-            display: flex;
-        }
-
-        .viewer-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .viewer-title {
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            flex: 1;
-        }
-
-        .viewer-close {
-            background: transparent;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 24px;
-            width: 32px;
-            height: 32px;
-            display: flex;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 300;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s ease;
         }
 
-        .viewer-close:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
+        .modal.active {
+            display: flex;
         }
 
-        .viewer-content {
-            flex: 1;
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            height: 90%;
             overflow: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            z-index: 301;
+        }
+
+        .pdf-viewer {
+            width: 100%;
+            height: 100%;
+        }
+
+        .image-viewer {
+            width: 100%;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 16px;
         }
 
-        .pdf-viewer, .image-viewer, .video-viewer {
+        .image-viewer img {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
         }
 
-        .html-viewer {
+        .video-viewer {
             width: 100%;
             height: 100%;
-            border: none;
-            background: white;
         }
 
-        @media (max-width: 600px) {
-            .item-card {
-                flex-direction: column;
-            }
+        .video-viewer video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
 
-            .item-image {
-                width: 100%;
-                height: 120px;
-            }
-
-            .detail-header {
-                flex-direction: column;
-            }
-
-            .detail-image {
-                width: 100%;
-                height: 150px;
-            }
-
-            .user-info {
-                display: none;
-            }
-
-            .user-avatar {
-                width: 28px;
-                height: 28px;
-                font-size: 12px;
-            }
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <div class="header-top">
-                <button class="back-btn-header" id="backBtnHeader" onclick="closeDetail()">← Назад</button>
-                <div class="title">АТИКАТ</div>
-                <div class="user-profile" id="userProfile">
-                    <div class="user-avatar" id="userAvatar">👤</div>
-                    <div class="user-info">
-                        <div class="user-name" id="userName">Гость</div>
-                        <div class="user-time" id="userTime">сейчас</div>
-                    </div>
-                </div>
-            </div>
-            <div class="category-tabs" id="categoryTabs"></div>
+            <button class="back-btn" onclick="goBack()" id="backBtn" style="visibility: hidden;">←</button>
+            <div class="header-title">АТИКАТ</div>
+            <button class="profile-btn" onclick="showProfile()">👤</button>
         </header>
 
-        <div class="content" id="content"></div>
-
-        <div class="file-viewer" id="fileViewer">
-            <div class="viewer-header">
-                <div class="viewer-title" id="viewerTitle">Просмотр файла</div>
-                <button class="viewer-close" onclick="closeFileViewer()">✕</button>
+        <div class="content" id="content">
+            <!-- Welcome Screen -->
+            <div id="welcomeScreen" class="welcome-screen">
+                <div class="welcome-title">Добро пожаловать!</div>
+                <div class="welcome-text">Выберите раздел в меню ниже, чтобы начать</div>
             </div>
-            <div class="viewer-content" id="viewerContent"></div>
+
+            <!-- Categories -->
+            <div id="categoriesView" style="display: none;">
+                <div class="categories-grid" id="categoriesGrid"></div>
+            </div>
+
+            <!-- Files -->
+            <div id="filesView" style="display: none;">
+                <div class="files-grid" id="filesGrid"></div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-tab active" onclick="showWelcome()">
+                <div class="nav-icon">👋</div>
+                <div>Welcome</div>
+            </div>
+            <div class="nav-tab" onclick="showCategories()">
+                <div class="nav-icon">📁</div>
+                <div>Категории</div>
+            </div>
         </div>
     </div>
 
+    <div class="modal" id="fileModal">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <div class="modal-content" id="modalContent"></div>
+    </div>
+
     <script>
-        // ============ SUPABASE CONFIG ============
         const SUPABASE_URL = 'https://fdvqlfmnppftzjvocbla.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkdnFsZm1ucHBmdHpqdm9jYmxhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE1MTQzMTUsImV4cCI6MTc0NzA0NjMxNX0.rN5OG8hNPW-vQjI-O8H9f-Rm-hNqH6lZXwZg6lZ0K6o';
-        
-        let supabase;
-        if (typeof window.supabase !== 'undefined') {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        }
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkdnFsZm1ucHBmdHpqdm9jYmxhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDUwNTU5MzgsImV4cCI6MTk4NDY3MTkzOH0.Y_mQqJ3H-1N0qJ0K0qJ0K0qJ0K0qJ0K0qJ0K0qJ0K0';
 
-        // ============ STATE ============
-        let categories = [];
-        let items = [];
+        const { createClient } = supabase;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let currentView = 'welcome';
         let currentCategory = null;
-        let currentItemId = null;
-        let isLoading = false;
+        let categories = [];
+        let files = [];
 
-        // ============ DEMO DATA ============
-        const DEMO_CATEGORIES = [
-            { id: 1, name: 'Раздел 1', color: 'green' },
-            { id: 2, name: 'Раздел 2', color: 'blue' },
-            { id: 3, name: 'Раздел 3', color: 'pink' }
-        ];
-
-        const DEMO_ITEMS = [
-            {
-                id: 1,
-                category_id: 1,
-                title: 'Заголовок 1',
-                description: 'Текст с описанием проекта и его деталями',
-                date: '15.12.2025',
-            files: ['3D_PCB DIP - Analog isolator.png', 'Файл 2.jpg', 'Файл 3.png', 'Видео.mp4', 'Документ.html', 'Изображение.svg']            },
-            {
-                id: 2,
-                category_id: 1,
-                title: 'Заголовок 2',
-                description: 'Описание второго элемента в разделе',
-                date: '14.12.2025',
-                files: ['Документ.pdf', 'График.jpg']
-            },
-            {
-                id: 3,
-                category_id: 2,
-                title: 'Заголовок 3',
-                description: 'Информация о третьем элементе',
-                date: '13.12.2025',
-                files: ['Файл.docx', 'Таблица.xlsx']
-            },
-            {
-                id: 4,
-                category_id: 3,
-                title: 'Заголовок 4',
-                description: 'Описание четвёртого элемента проекта',
-                date: '12.12.2025',
-                files: ['Видео.webm', 'Фото.png']
-            }
-        ];
-
-        // ============ USER MANAGEMENT ============
-        async function initUser() {
-            const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
-
+        async function initApp() {
+            await Telegram.WebApp.ready();
+            Telegram.WebApp.expand();
+            
+            const user = Telegram.WebApp.initDataUnsafe.user;
             if (user) {
-                const userName = user.first_name || user.username || 'Пользователь';
-                const userInitial = userName.charAt(0).toUpperCase();
-                const userId = user.id;
+                await logUserSession(user);
+            }
 
-                document.getElementById('userName').textContent = userName;
-                document.getElementById('userAvatar').textContent = userInitial;
+            await loadCategories();
+        }
 
-                try {
-                    await logUserSession(userId, user.username, user.first_name);
-                } catch (error) {
-                    console.log('User logging skipped:', error);
+        async function logUserSession(user) {
+            try {
+                await supabaseClient.from('user_sessions').insert({
+                    user_id: user.id,
+                    username: user.username || '',
+                    first_name: user.first_name,
+                    visited_at: new Date().toISOString()
+                });
+            } catch (error) {
+                console.error('Error logging session:', error);
+            }
+        }
+
+        async function loadCategories() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('categories')
+                    .select('*')
+                    .limit(3);
+
+                if (error) throw error;
+
+                categories = data || [];
+                renderCategories();
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+
+        function renderCategories() {
+            const grid = document.getElementById('categoriesGrid');
+            grid.innerHTML = '';
+
+            categories.forEach(cat => {
+                const card = document.createElement('div');
+                card.className = 'category-card';
+                
+                let imageHtml = '';
+                if (cat.image_url) {
+                    imageHtml = `<img src="${cat.image_url}" alt="" class="category-image">`;
                 }
+
+                card.innerHTML = `
+                    ${imageHtml}
+                    <div class="category-info">
+                        <div class="category-title">${cat.name}</div>
+                        <div class="category-count">${cat.file_count || 0} файлов</div>
+                    </div>
+                `;
+
+                card.onclick = () => openCategory(cat.id, cat.name);
+                grid.appendChild(card);
+            });
+        }
+
+        async function openCategory(categoryId, categoryName) {
+            currentCategory = categoryId;
+            await loadFiles(categoryId);
+            showFiles(categoryName);
+        }
+
+        async function loadFiles(categoryId) {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('files')
+                    .select('*')
+                    .eq('category_id', categoryId);
+
+                if (error) throw error;
+
+                files = data || [];
+                renderFiles();
+            } catch (error) {
+                console.error('Error loading files:', error);
+            }
+        }
+
+        function renderFiles() {
+            const grid = document.getElementById('filesGrid');
+            grid.innerHTML = '';
+
+            files.forEach(file => {
+                const card = document.createElement
+('div');
+                card.className = 'file-card';
+                
+                const getFileIcon = (filename) => {
+                    const ext = filename.split('.').pop().toLowerCase();
+                    const icons = {
+                        pdf: '\ud83d\udcc4',
+                        jpg: '\ud83d\uddf8\ufe0f',
+                        jpeg: '\ud83d\uddf8\ufe0f',
+                        png: '\ud83d\uddf8\ufe0f',
+                        svg: '\ud83d\uddf8\ufe0f',
+                        mp4: '\ud83c\udf9c',
+                        avi: '\ud83c\udf9c',
+                        mov: '\ud83c\udf9c',
+                        html: '\ud83c\udf10'
+                    };
+                    return icons[ext] || '\ud83d\udcc4';
+                };
+
+                card.innerHTML = `
+                    <div class="file-info">
+                        <div class="file-icon">${getFileIcon(file.file_name)}</div>
+                        <div class="file-details">
+                            <div class="file-name">${file.file_name}</div>
+                            <div class="file-size">${(file.file_size / 1024).toFixed(2)} KB</div>
+                        </div>
+                    </div>
+                    <div class="file-actions">
+                        <button class="file-btn view-btn" onclick="viewFile('${file.file_url}', '${file.file_name}')">👁️</button>
+                        <button class="file-btn download-btn" onclick="downloadFile('${file.file_url}', '${file.file_name}')">⬇️</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function viewFile(url, filename) {
+            const modal = document.getElementById('fileModal');
+            const ext = filename.split('.').pop().toLowerCase();
+            let content = '';
+
+            if (['jpg', 'jpeg', 'png', 'svg'].includes(ext)) {
+                content = `<div class="image-viewer"><img src="${url}" alt="${filename}"></div>`;
+            } else if (['mp4', 'avi', 'mov', 'webm'].includes(ext)) {
+                content = `<div class="video-viewer"><video controls><source src="${url}"></video></div>`;
+            } else if (ext === 'pdf') {
+                content = `<iframe class="pdf-viewer" src="${url}" type="application/pdf"></iframe>`;
+            } else if (ext === 'html') {
+                content = `<iframe class="pdf-viewer" src="${url}"></iframe>`;
             } else {
-                document.getElementById('userName').textContent = 'Демо';
-                document.getElementById('userAvatar').textContent = 'Д';
+                content = `<div class="loading">Unsupported file type</div>`;
             }
 
-            updateUserTime();
-            setInterval(updateUserTime, 60000);
+            document.getElementById('modalContent').innerHTML = content;
+            modal.classList.add('active');
         }
 
-        function updateUserTime() {
-            const now = new Date();
-            const hours = now.getHours();
-            let timeStr = 'сейчас';
-            
-            if (hours < 12) timeStr = 'Утро';
-            else if (hours < 18) timeStr = 'Днем';
-            else timeStr = 'Вечер';
-
-            document.getElementById('userTime').textContent = timeStr;
+        function closeModal() {
+            document.getElementById('fileModal').classList.remove('active');
         }
 
-        async function logUserSession(telegramId, username, firstName) {
-            if (!supabase) return;
-            
-            try {
-                const { data, error } = await supabase
-                    .from('user_sessions')
-                    .upsert([{
-                        telegram_id: telegramId,
-                        telegram_username: username || '',
-                        telegram_first_name: firstName || '',
-                        last_visit: new Date().toISOString()
-                    }]);
-
-                if (error) console.error('Logging error:', error);
-                else console.log('User session logged:', data);
-            } catch (error) {
-                console.error('Error logging user:', error);
-            }
-        }
-
-        // ============ LOAD DATA ============
-        async function loadData() {
-            isLoading = true;
-            try {
-                // Uncomment for real Supabase:
-                // const { data: cats } = await supabase.from('categories').select('*');
-                // const { data: allItems } = await supabase.from('items').select('*');
-                // categories = cats || [];
-                // items = allItems || [];
-
-                // Demo mode
-                categories = DEMO_CATEGORIES;
-                items = DEMO_ITEMS;
-
-                renderCategoryTabs();
-                renderMainView();
-            } catch (error) {
-                console.error('Error loading data:', error);
-                document.getElementById('content').innerHTML = `<div style="padding: 20px; text-align: center; color: #666;">Ошибка загрузки данных</div>`;
-            } finally {
-                isLoading = false;
-            }
-        }
-
-        // ============ RENDER FUNCTIONS ============
-        function renderCategoryTabs() {
-            const tabs = document.getElementById('categoryTabs');
-            tabs.innerHTML = categories.map(cat => `
-                <button class="category-tab ${!currentCategory || currentCategory === cat.id ? 'active' : ''}" 
-                        onclick="selectCategory(${cat.id})">${cat.name}</button>
-            `).join('');
-        }
-
-        function selectCategory(catId) {
-            currentCategory = catId;
-            renderCategoryTabs();
-            renderMainView();
-        }
-
-        function renderMainView() {
-            const filteredItems = currentCategory 
-                ? items.filter(i => i.category_id === currentCategory)
-                : items;
-
-            const content = document.getElementById('content');
-            content.innerHTML = filteredItems.map(item => `
-                <div class="item-card" onclick="openDetail(${item.id})">
-                    <div class="item-image">Картинка</div>
-                    <div class="item-content">
-                        <div class="item-title">${item.title}</div>
-                        <div class="item-description">${item.description}</div>
-                        <div class="item-date">Дата: ${item.date}</div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function openDetail(itemId) {
-            currentItemId = itemId;
-            renderDetailView();
-        }
-
-        function renderDetailView() {
-            const item = items.find(i => i.id === currentItemId);
-            if (!item) return;
-
-            document.getElementById('backBtnHeader').classList.add('visible');
-
-            const content = document.getElementById('content');
-            content.innerHTML = `
-                <div class="detail-header">
-                    <div class="detail-info">
-                        <div class="detail-title">${item.title}</div>
-                        <div class="detail-description">${item.description}</div>
-                        <div class="detail-date">Дата: ${item.date}</div>
-                    </div>
-                    <div class="detail-image">Картинка</div>
-                </div>
-
-                <div class="files-section">
-                    <div class="files-title">Файлы (${item.files?.length || 0})</div>
-                    <div>
-                        ${(item.files || []).map((file, idx) => `
-                            <div class="file-item">
-                                <div class="file-info">
-                                    <div class="file-icon">${String.fromCharCode(65 + (idx % 26))}</div>
-                                    <div class="file-name">${file}</div>
-                                </div>
-                                <div class="file-actions">
-                                    <button class="file-btn" title="Просмотреть" onclick="openFileViewer('${file.replace(/'/g, "\\'")}')">👁️</button>
-                                    <button class="file-btn" title="Скачать" onclick="downloadFile('${file.replace(/'/g, "\\'")}')">⬇️</button>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
-
-        function closeDetail() {
-            currentItemId = null;
-            document.getElementById('backBtnHeader').classList.remove('visible');
-            renderMainView();
-        }
-
-        // ============ FILE VIEWER ============
-        function getFileExtension(filename) {
-            return filename.split('.').pop().toLowerCase();
-        }
-
-        function getFileType(filename) {
-            const ext = getFileExtension(filename);
-            const types = {
-                'pdf': 'pdf',
-                'jpg': 'image', 'jpeg': 'image', 'png': 'image', 'gif': 'image', 'svg': 'image', 'webp': 'image',
-                'mp4': 'video', 'webm': 'video', 'mov': 'video', 'avi': 'video',
-                'html': 'html', 'htm': 'html'
-            };
-            return types[ext] || 'unknown';
-        }
-
-        function openFileViewer(filename) {
-            const fileType = getFileType(filename);
-            const viewer = document.getElementById('fileViewer');
-            const viewerContent = document.getElementById('viewerContent');
-            const viewerTitle = document.getElementById('viewerTitle');
-
-            viewerTitle.textContent = filename;
-            viewerContent.innerHTML = '';
-
-            const baseUrl = 'https://fdvqlfmnppftzjvocbla.supabase.co/storage/v1/object/public/app/'
-            const fileUrl = baseUrl + filename;
-
-            try {
-                switch (fileType) {
-                    case 'pdf':
-                        viewerContent.innerHTML = `<iframe src="${fileUrl}" class="pdf-viewer"></iframe>`;
-                        break;
-                    case 'image':
-                        viewerContent.innerHTML = `<img src="${fileUrl}" class="image-viewer" alt="${filename}" />`;
-                        break;
-                    case 'video':
-                        viewerContent.innerHTML = `<video controls class="video-viewer"><source src="${fileUrl}" />Ваш браузер не поддерживает видео</video>`;
-                        break;
-                    case 'html':
-                        viewerContent.innerHTML = `<iframe src="${fileUrl}" class="html-viewer"></iframe>`;
-                        break;
-                    default:
-                        viewerContent.innerHTML = `<div style="color: white; text-align: center; padding: 40px;"><div style="font-size: 48px; margin-bottom: 16px;">📄</div><div>Этот тип файла не поддерживается</div></div>`;
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                viewerContent.innerHTML = `<div style="color: white; text-align: center; padding: 40px;">Ошибка при открытии файла</div>`;
-            }
-
-            viewer.classList.add('active');
-        }
-
-        function closeFileViewer() {
-            document.getElementById('fileViewer').classList.remove('active');
-        }
-
-        function downloadFile(filename) {
-            const baseUrl = 'https://fdvqlfmnppftzjvocbla.supabase.co/storage/v1/object/public/app/'
-            const fileUrl = baseUrl + filename;
-
+        function downloadFile(url, filename) {
             const a = document.createElement('a');
-            a.href = fileUrl;
+            a.href = url;
             a.download = filename;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
         }
 
-        // ============ INIT ============
-        window.addEventListener('DOMContentLoaded', () => {
-            initUser();
-            loadData();
-        });
+        function showWelcome() {
+            currentView = 'welcome';
+            document.getElementById('welcomeScreen').style.display = 'flex';
+            document.getElementById('categoriesView').style.display = 'none';
+            document.getElementById('filesView').style.display = 'none';
+            document.getElementById('backBtn').style.visibility = 'hidden';
+            updateNavigation();
+        }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const viewer = document.getElementById('fileViewer');
-            if (viewer) {
-                viewer.addEventListener('click', (e) => {
-                    if (e.target.id === 'fileViewer') {
-                        closeFileViewer();
-                    }
-                });
+        function showCategories() {
+            currentView = 'categories';
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('categoriesView').style.display = 'block';
+            document.getElementById('filesView').style.display = 'none';
+            document.getElementById('backBtn').style.visibility = 'hidden';
+            updateNavigation();
+        }
+
+        function showFiles(categoryName) {
+            currentView = 'files';
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('categoriesView').style.display = 'none';
+            document.getElementById('filesView').style.display = 'block';
+            document.getElementById('backBtn').style.visibility = 'visible';
+            document.querySelector('.header-title').textContent = categoryName;
+            updateNavigation();
+        }
+
+        function updateNavigation() {
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach((tab, index) => {
+                tab.classList.remove('active');
+                if ((index === 0 && currentView === 'welcome') ||
+                    (index === 1 && (currentView === 'categories' || currentView === 'files'))) {
+                    tab.classList.add('active');
+                }
+            });
+        }
+
+        function goBack() {
+            if (currentView === 'files') {
+                showCategories();
+                document.querySelector('.header-title').textContent = 'АТИКАТ';
             }
-        });
+        }
+
+        function showProfile() {
+            const user = Telegram.WebApp.initDataUnsafe.user;
+            if (user) {
+                alert(`👤 ${user.first_name}\nID: ${user.id}`);
+            }
+        }
+
+        initApp();
     </script>
 </body>
 </html>
