@@ -196,10 +196,6 @@
             transform: translateY(-2px);
         }
 
-        .item-card.green { --accent-color: var(--color-green); }
-        .item-card.blue { --accent-color: var(--color-blue); }
-        .item-card.pink { --accent-color: var(--color-pink); }
-
         .item-content {
             flex: 1;
             min-width: 0;
@@ -469,6 +465,12 @@
             background: white;
         }
 
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--color-text-light);
+        }
+
         @media (max-width: 600px) {
             .item-card {
                 flex-direction: column;
@@ -515,4 +517,6 @@
                 <button class="back-btn-header" id="backBtnHeader" onclick="closeDetail()">← Назад</button>
                 <div class="title">АТИКАТ</div>
                 <div class="user-profile" id="userProfile">
-                    <div class="user-avatar" id="userAvatar">👤
+                    <div class="user-avatar" id="userAvatar">👤</div>
+                    <div class="user-info">
+                        <div class="user-name" id="userName">
