@@ -5,195 +5,264 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>АТИКАТ</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
+
     body {
       font-family: 'TT Gertika', system-ui, -apple-system, sans-serif;
       background: white;
       overflow: hidden;
     }
+
     .container {
       display: flex;
       flex-direction: column;
       height: 100vh;
     }
+
     header {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 16px;
-      border-bottom: 1px solid #f0f0f0;
-      z-index: 100;
       background: white;
+      padding: 12px 16px;
+      border-bottom: 1px solid #eee;
+      align-items: center;
+      gap: 12px;
     }
-    .back-btn {
-      font-size: 24px;
-      cursor: pointer;
-      background: none;
-      border: none;
-      color: #000;
-      padding: 8px;
-      display: none;
-    }
+
     .header-title {
-      font-size: 20px;
-      font-weight: bold;
+      font-size: 16px;
+      font-weight: 600;
       color: #000;
       flex: 1;
       text-align: center;
     }
+
     .profile-section {
       display: flex;
       align-items: center;
       gap: 8px;
     }
+
     .profile-avatar {
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
-      font-weight: bold;
-      overflow: hidden;
+      font-weight: 600;
     }
+
     .profile-avatar img {
       width: 100%;
       height: 100%;
+      border-radius: 50%;
       object-fit: cover;
     }
+
     .profile-info {
       display: flex;
       flex-direction: column;
       gap: 2px;
     }
+
     .profile-name {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       color: #000;
     }
+
     .profile-username {
-      font-size: 12px;
+      font-size: 11px;
       color: #999;
     }
+
     .nav-bar {
       display: flex;
-      border-bottom: 1px solid #f0f0f0;
       background: white;
+      border-bottom: 1px solid #eee;
+      padding: 0 16px;
+      gap: 24px;
+      overflow-x: auto;
     }
+
     .nav-item {
-      flex: 1;
-      padding: 16px;
-      text-align: center;
+      padding: 12px 0;
+      font-size: 13px;
+      color: #666;
       cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      color: #999;
-      border-bottom: 3px solid transparent;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
     }
+
     .nav-item.active {
       color: #000;
-      border-bottom-color: #FF0000;
+      border-bottom-color: #000;
+      font-weight: 600;
     }
+
     .content {
       flex: 1;
       overflow-y: auto;
+      display: flex;
+      flex-direction: column;
     }
+
+    .screen-active {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
     .screen {
       display: none;
     }
+
     .screen.active {
-      display: block;
-    }
-    .folder-item, .file-item {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
       padding: 16px;
-      border-bottom: 1px solid #f0f0f0;
-      cursor: pointer;
+      gap: 12px;
+    }
+
+    .folder-item,
+    .file-item {
+      padding: 12px 16px;
+      border: 1px solid #eee;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       gap: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: white;
     }
-    .folder-item:hover, .file-item:hover {
-      background: #f9f9f9;
+
+    .folder-item:hover,
+    .file-item:hover {
+      background: #f5f5f5;
+      border-color: #ddd;
     }
-    .folder-icon {
+
+    .folder-icon,
+    .file-icon {
       font-size: 20px;
+      flex-shrink: 0;
     }
-    .item-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #000;
-    }
+
     .item-info {
-      font-size: 12px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .item-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: #000;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .item-size {
+      font-size: 11px;
       color: #999;
     }
-    .loading, .empty-state {
+
+    .empty-state {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      color: #999;
+      font-size: 14px;
       text-align: center;
-      padding: 32px 16px;
-      color: #999;
     }
-    .topic-content {
-      padding: 16px;
-      line-height: 1.6;
+
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      color: #666;
+      font-size: 14px;
     }
-    .topic-content h1 {
-      font-size: 24px;
-      margin-bottom: 12px;
+
+    .back-btn {
+      padding: 8px 12px;
+      background: #f0f0f0;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #000;
+      transition: all 0.2s;
     }
-    .topic-content p {
-      color: #999;
-      font-size: 12px;
-      margin-bottom: 24px;
+
+    .back-btn:hover {
+      background: #e0e0e0;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <button class="back-btn" id="backBtn">← Назад</button>
       <div class="header-title">АТИКАТ</div>
       <div class="profile-section">
         <div class="profile-avatar" id="profileAvatar">?</div>
         <div class="profile-info">
           <div class="profile-name" id="profileName">Пользователь</div>
-          <div class="profile-username" id="profileUsername">@username</div>
+          <div class="profile-username" id="profileUsername">@user</div>
         </div>
       </div>
     </header>
+
     <div class="nav-bar">
-      <div class="nav-item active" data-nav="topics">Файлы</div>
+      <div class="nav-item active" data-nav="topics" id="navTopics">Файлы</div>
     </div>
-    <div class="content" id="content">
-      <div class="screen active" id="topicsScreen"></div>
-      <div class="screen" id="detailScreen"></div>
+
+    <div class="content">
+      <div id="topicsScreen" class="screen active">
+        <div class="loading">Загрузка...</div>
+      </div>
+      <div id="detailScreen" class="screen">
+        <button class="back-btn" id="backBtn">← Назад</button>
+        <div id="detailContent"></div>
+      </div>
     </div>
   </div>
+
   <script>
     const SUPABASE_URL = 'https://fdvqlfmnppftzjvocbla.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkdnFsZm1ucHBmdHpqdm9jYmxhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1MDEyODAsImV4cCI6MjA4MTA3NzI4MH0.PX9t2L2zgg66JYSqv5nPyzCnZERY3lFEngIte5tIAUI';
-    const STORAGE_BUCKET = 'topics'; // Назовите ваш bucket в Supabase Storage
-    
+    const STORAGE_BUCKET = 'topics';
+
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     const tg = window.Telegram.WebApp;
-    
+
     let currentPath = '';
     let navigationStack = [];
     let userData = null;
-    
+
     function init() {
       if (tg.initDataUnsafe?.user) {
         const user = tg.initDataUnsafe.user;
         userData = user;
         document.getElementById('profileName').textContent = user.first_name;
         document.getElementById('profileUsername').textContent = '@' + (user.username || 'user');
+        
         if (user.photo_url) {
           document.getElementById('profileAvatar').innerHTML = `<img src="${user.photo_url}" alt="avatar">`;
         } else {
@@ -204,184 +273,124 @@
       setupEventListeners();
       loadFileStructure();
     }
-    
+
     function setupEventListeners() {
       document.getElementById('backBtn').addEventListener('click', goBack);
     }
-    
+
     async function loadFileStructure(path = '') {
       const screen = document.getElementById('topicsScreen');
       screen.innerHTML = '<div class="loading">Загрузка...</div>';
-      
+
       try {
-        // Получаем список файлов и папок
         const { data, error } = await supabase.storage
           .from(STORAGE_BUCKET)
-          .list(path, { limit: 100 });
-        
-        if (error) throw error;
-        
+          .list(path, { limit: 1000 });
+
+        if (error) {
+          console.error('Ошибка при загрузке:', error);
+          throw error;
+        }
+
         if (!data || data.length === 0) {
           screen.innerHTML = '<div class="empty-state">Нет файлов и папок</div>';
           return;
         }
-        
-        // Разделяем папки и файлы
-const folders = data.filter(item => item.id === null);
-    const files = data.filter(item => item.id !== null);
-    
-    // Если нет папок в ответе API, извлекаем их из путей файлов
-    if (folders.length === 0 && files.length > 0) {
-      const folderSet = new Set();
-      files.forEach(file => {
-        const pathParts = file.name.split('/');
-        // Если файл в подпапке, добавляем имя первой подпапки
-        if (pathParts.length > 1) {
-          folderSet.add(pathParts[0]);
-        }
-      });
-      // Преобразуем Set в объекты папок для API
-      folders.push(...Array.from(folderSet).map(folderName => ({
-        id: null,
-        name: folderName,
-        metadata: null
-      })));
-    }
+
+        const folders = data.filter(item => item.id === null);
+        const files = data.filter(item => item.id !== null);
+
         let html = '';
-        
+
         // Добавляем папки
         folders.forEach(folder => {
           html += `
-            <div class="folder-item" onclick="navigateToFolder('${path ? path + '/' : ''}${folder.name}', '${folder.name}')">
-              <span class="folder-icon">📁</span>
-              <div>
-                <div class="item-title">${folder.name}</div>
-                <div class="item-info">Папка</div>
+            <div class="folder-item" onclick="navigateToFolder('${path ? path + '/' : ''}${folder.name}')">
+              <div class="folder-icon">📁</div>
+              <div class="item-info">
+                <div class="item-name">${folder.name}</div>
               </div>
             </div>
           `;
         });
-        
+
         // Добавляем файлы
         files.forEach(file => {
           const isMarkdown = file.name.endsWith('.md');
           const icon = isMarkdown ? '📄' : '📎';
+          const fileSize = file.metadata ? (file.metadata.size / 1024).toFixed(1) + ' KB' : '';
+          
           html += `
             <div class="file-item" onclick="openFile('${path ? path + '/' : ''}${file.name}', '${file.name}')">
-              <span class="folder-icon">${icon}</span>
-              <div>
-                <div class="item-title">${file.name}</div>
-                <div class="item-info">Файл • ${(file.metadata?.size / 1024).toFixed(1)} KB</div>
+              <div class="file-icon">${icon}</div>
+              <div class="item-info">
+                <div class="item-name">${file.name}</div>
+                ${fileSize ? `<div class="item-size">${fileSize}</div>` : ''}
               </div>
             </div>
           `;
         });
-        
-        screen.innerHTML = html || '<div class="empty-state">Нет файлов и папок</div>';
+
+        screen.innerHTML = html;
         currentPath = path;
-        updateHeader(path);
-        
       } catch (e) {
         console.error('Ошибка:', e);
         screen.innerHTML = '<div class="empty-state">Ошибка загрузки файлов</div>';
       }
     }
-    
+
     async function openFile(filePath, fileName) {
-      const screen = document.getElementById('detailScreen');
-      screen.innerHTML = '<div class="loading">Загрузка файла...</div>';
+      const detailScreen = document.getElementById('detailScreen');
+      const detailContent = document.getElementById('detailContent');
       
+      detailContent.innerHTML = '<div class="loading">Загрузка файла...</div>';
+      detailScreen.classList.add('active');
+      document.getElementById('topicsScreen').classList.remove('active');
+
       try {
-        // Получаем URL файла
-        const { data } = supabase.storage
+        const { data, error } = await supabase.storage
           .from(STORAGE_BUCKET)
-          .getPublicUrl(filePath);
+          .download(filePath);
+
+        if (error) throw error;
+
+        const text = await data.text();
         
-        const fileUrl = data.publicUrl;
-        
-        // Загружаем содержимое файла
-        const response = await fetch(fileUrl);
-        const content = await response.text();
-        
-        // Если это markdown, преобразуем его (простой парсинг)
-        let htmlContent = content;
         if (fileName.endsWith('.md')) {
-          htmlContent = parseMarkdown(content);
+          // Простой рендеринг Markdown
+          let html = text
+            .replace(/^### (.*?)$/gm, '<h3>$1</h3>')
+            .replace(/^## (.*?)$/gm, '<h2>$1</h2>')
+            .replace(/^# (.*?)$/gm, '<h1>$1</h1>')
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/\n/g, '<br>');
+          
+          detailContent.innerHTML = `<div style="font-size: 14px; line-height: 1.6; color: #333;">${html}</div>`;
         } else {
-          htmlContent = `<pre>${escapeHtml(content)}</pre>`;
+          detailContent.innerHTML = `<pre style="white-space: pre-wrap; word-wrap: break-word; font-size: 12px;">${text}</pre>`;
         }
-        
-        showScreen('detailScreen');
-        screen.innerHTML = `
-          <div class="topic-content">
-            <h1>${escapeHtml(fileName)}</h1>
-            <p>${new Date().toLocaleDateString('ru')}</p>
-            <div>${htmlContent}</div>
-          </div>
-        `;
-        
-        navigationStack.push(currentPath);
-        updateBackButton();
-        
       } catch (e) {
-        console.error('Ошибка:', e);
-        screen.innerHTML = '<div class="empty-state">Ошибка загрузки файла</div>';
+        console.error('Ошибка при загрузке файла:', e);
+        detailContent.innerHTML = '<div class="empty-state">Ошибка загрузки файла</div>';
       }
     }
-    
-    function navigateToFolder(path, folderName) {
+
+    function navigateToFolder(folderPath) {
       navigationStack.push(currentPath);
-      loadFileStructure(path);
-      updateBackButton();
+      loadFileStructure(folderPath);
     }
-    
+
     function goBack() {
       if (navigationStack.length > 0) {
         const previousPath = navigationStack.pop();
         loadFileStructure(previousPath);
-        updateBackButton();
-        showScreen('topicsScreen');
+        document.getElementById('detailScreen').classList.remove('active');
+        document.getElementById('topicsScreen').classList.add('active');
       }
     }
-    
-    function updateHeader(path) {
-      const parts = path.split('/');
-      const title = parts[parts.length - 1] || 'АТИКАТ';
-      document.querySelector('.header-title').textContent = title || 'АТИКАТ';
-    }
-    
-    function updateBackButton() {
-      const backBtn = document.getElementById('backBtn');
-      backBtn.style.display = navigationStack.length > 0 ? 'block' : 'none';
-    }
-    
-    function showScreen(screenId) {
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      document.getElementById(screenId).classList.add('active');
-    }
-    
-    function parseMarkdown(md) {
-      let html = md
-        .replace(/^### (.*?)$/gm, '<h3>$1</h3>')
-        .replace(/^## (.*?)$/gm, '<h2>$1</h2>')
-        .replace(/^# (.*?)$/gm, '<h1>$1</h1>')
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\*(.*?)\*/g, '<em>$1</em>')
-        .replace(/`(.*?)`/g, '<code>$1</code>')
-        .replace(/\n\n/g, '</p><p>');
-      return `<p>${html}</p>`;
-    }
-    
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
-    
-    // Инициализация при загрузке страницы
-    document.addEventListener('DOMContentLoaded', init);
+
+    init();
   </script>
 </body>
-
-
-<!-- Rebuild trigger --></html>
+</html>
