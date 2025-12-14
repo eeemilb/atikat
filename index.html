@@ -6,6 +6,8 @@
   <title>АТИКАТ</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/stl-viewer@1.1.0/dist/index.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; overflow: hidden; }
@@ -29,6 +31,8 @@
     .viewer video, .viewer audio { width: 100%; border-radius: 8px; }
     .viewer iframe { width: 100%; height: 600px; border-radius: 8px; border: none; }
     .viewer pre { background: #f5f5f5; padding: 12px; border-radius: 8px; overflow: auto; font-size: 12px; line-height: 1.5; }
+    #stl-viewer { width: 100%; height: 600px; border-radius: 8px; }
+    .html-viewer { width: 100%; height: 600px; border-radius: 8px; border: none; }
   </style>
 </head>
 <body>
@@ -123,35 +127,46 @@
         
         let html = `<button class="back-btn" onclick="loadFolder('${currentPath}')">← Назад</button>`;
 
-        // Image files
         if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(ext)) {
           const url = supabase.storage.from(BUCKET).getPublicUrl(filePath).data.publicUrl;
           html += `<div class="viewer"><img src="${url}" alt="Изображение"></div>`;
-        }
-        // Video files
-        else if (['mp4', 'avi', 'mov', 'mkv', 'webm'].includes(ext)) {
+        } else if (['mp4', 'avi', 'mov', 'mkv', 'webm'].includes(ext)) {
           const url = supabase.storage.from(BUCKET).getPublicUrl(filePath).data.publicUrl;
           html += `<div class="viewer"><video controls><source src="${url}"></video></div>`;
-        }
-        // Audio files
-        else if (['mp3', 'wav', 'flac', 'm4a'].includes(ext)) {
+        } else if (['mp3', 'wav', 'flac', 'm4a'].includes(ext)) {
           const url = supabase.storage.from(BUCKET).getPublicUrl(filePath).data.publicUrl;
           html += `<div class="viewer"><audio controls style="width: 100%;"><source src="${url}"></audio></div>`;
-        }
-        // PDF files
-        else if (ext === 'pdf') {
+        } else if (ext === 'pdf') {
           const url = supabase.storage.from(BUCKET).getPublicUrl(filePath).data.publicUrl;
           html += `<div class="viewer"><iframe src="${url}"></iframe></div>`;
-        }
-        // Text files
-        else if (['txt', 'md', 'json', 'xml', 'html', 'css', 'js'].includes(ext)) {
+        } else if (ext === 'html') {
+          const { data: fileData, error } = await supabase.storage.from(BUCKET).download(filePath);
+          if (error) throw error;
+          const text = await fileData.text();
+          html += `<div class="viewer"><iframe class="html-viewer" srcdoc="${text.replace(/"/g, '&quot;')}"></iframe></div>`;
+        } else if (['stl', 'obj', 'gltf', 'glb'].includes(ext)) {
+          const url = supabase.storage.from(BUCKET).getPublicUrl(filePath).data.publicUrl;
+          html += `<div class="viewer"><div id="stl-viewer"></div></div>`;
+          content.innerHTML = html;
+          setTimeout(() => {
+            const viewer = document.getElementById('stl-viewer');
+            viewer.innerHTML = `<stl-viewer model="${url}" style="width: 100%; height: 100%;"></stl-viewer>`;
+          }, 100);
+          return;
+        } else if (['step', 'stp', 'iges', 'iges'.toLowerCase()].includes(ext)) {
+          html += `<div class="viewer"><div style="padding: 20px; text-align: center; color: #999;">
+            <p>📐 3D модель (${ext.toUpperCase()})</p>
+            <p style="font-size: 12px; margin-top: 10px;">Откройте файл в CAD приложении (FreeCAD, Fusion 360, SolidWorks)</p>
+            <p style="font-size: 12px; margin-top: 20px;">
+              <a href="${supabase.storage.from(BUCKET).getPublicUrl(filePath).data.publicUrl}" download style="color: #667eea; text-decoration: none; border: 1px solid #667eea; padding: 8px 16px; border-radius: 6px; display: inline-block;">Скачать файл</a>
+            </p>
+          </div></div>`;
+        } else if (['txt', 'md', 'json', 'xml', 'html', 'css', 'js', 'py', 'c', 'cpp', 'h', 'asm'].includes(ext)) {
           const { data: fileData, error } = await supabase.storage.from(BUCKET).download(filePath);
           if (error) throw error;
           const text = await fileData.text();
           html += `<div class="viewer"><pre>${text.substring(0, 10000)}</pre></div>`;
-        }
-        // Default: try to show as text
-        else {
+        } else {
           const { data: fileData, error } = await supabase.storage.from(BUCKET).download(filePath);
           if (error) throw error;
           const text = await fileData.text();
