@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>АТИКАТ</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * {
       margin: 0;
@@ -14,8 +14,8 @@
     }
 
     body {
-      font-family: 'TT Gertika', system-ui, -apple-system, sans-serif;
-      background: white;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #fff;
       overflow: hidden;
     }
 
@@ -26,178 +26,101 @@
     }
 
     header {
-      display: flex;
-      background: white;
       padding: 12px 16px;
       border-bottom: 1px solid #eee;
+      display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 12px;
     }
 
     .header-title {
       font-size: 16px;
       font-weight: 600;
-      color: #000;
       flex: 1;
       text-align: center;
     }
 
-    .profile-section {
+    .profile {
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .profile-avatar {
-      width: 36px;
-      height: 36px;
+    .avatar {
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #667eea;
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
       font-weight: 600;
+      font-size: 12px;
     }
 
-    .profile-avatar img {
+    .avatar img {
       width: 100%;
       height: 100%;
       border-radius: 50%;
       object-fit: cover;
     }
 
-    .profile-info {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .profile-name {
-      font-size: 13px;
-      font-weight: 600;
-      color: #000;
-    }
-
-    .profile-username {
-      font-size: 11px;
-      color: #999;
-    }
-
-    .nav-bar {
-      display: flex;
-      background: white;
-      border-bottom: 1px solid #eee;
-      padding: 0 16px;
-      gap: 24px;
-      overflow-x: auto;
-    }
-
-    .nav-item {
-      padding: 12px 0;
-      font-size: 13px;
-      color: #666;
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      white-space: nowrap;
-    }
-
-    .nav-item.active {
-      color: #000;
-      border-bottom-color: #000;
-      font-weight: 600;
-    }
-
     .content {
       flex: 1;
       overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .screen-active {
       padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
     }
 
-    .screen {
-      display: none;
-    }
-
-    .screen.active {
-      display: flex;
-      flex: 1;
-      flex-direction: column;
-      padding: 16px;
-      gap: 12px;
-    }
-
-    .folder-item,
-    .file-item {
-      padding: 12px 16px;
+    .item {
+      padding: 12px;
       border: 1px solid #eee;
       border-radius: 8px;
+      margin-bottom: 8px;
+      cursor: pointer;
       display: flex;
       align-items: center;
       gap: 12px;
-      cursor: pointer;
       transition: all 0.2s;
-      background: white;
     }
 
-    .folder-item:hover,
-    .file-item:hover {
+    .item:hover {
       background: #f5f5f5;
       border-color: #ddd;
     }
 
-    .folder-icon,
-    .file-icon {
+    .item-icon {
       font-size: 20px;
-      flex-shrink: 0;
-    }
-
-    .item-info {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      min-width: 0;
+      min-width: 24px;
     }
 
     .item-name {
-      font-size: 13px;
-      font-weight: 500;
-      color: #000;
+      flex: 1;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      font-size: 14px;
+      font-weight: 500;
     }
 
     .item-size {
-      font-size: 11px;
+      font-size: 12px;
       color: #999;
     }
 
-    .empty-state {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex: 1;
-      color: #999;
-      font-size: 14px;
+    .empty {
       text-align: center;
+      padding: 40px 20px;
+      color: #999;
     }
 
-    .loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex: 1;
-      color: #666;
-      font-size: 14px;
+    .error {
+      background: #fee;
+      padding: 12px;
+      border-radius: 8px;
+      color: #c33;
+      margin: 8px 0;
     }
 
     .back-btn {
@@ -206,13 +129,17 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 13px;
-      color: #000;
-      transition: all 0.2s;
+      margin-bottom: 12px;
     }
 
-    .back-btn:hover {
-      background: #e0e0e0;
+    .debug {
+      font-size: 11px;
+      color: #999;
+      padding: 8px;
+      background: #fafafa;
+      border-radius: 4px;
+      margin-top: 8px;
+      font-family: monospace;
     }
   </style>
 </head>
@@ -220,175 +147,158 @@
   <div class="container">
     <header>
       <div class="header-title">АТИКАТ</div>
-      <div class="profile-section">
-        <div class="profile-avatar" id="profileAvatar">?</div>
-        <div class="profile-info">
-          <div class="profile-name" id="profileName">Пользователь</div>
-          <div class="profile-username" id="profileUsername">@user</div>
-        </div>
+      <div class="profile">
+        <div class="avatar" id="avatar">?</div>
       </div>
     </header>
 
-    <div class="nav-bar">
-      <div class="nav-item active" data-nav="topics" id="navTopics">Файлы</div>
-    </div>
-
-    <div class="content">
-      <div id="topicsScreen" class="screen active">
-        <div class="loading">Загрузка...</div>
-      </div>
-      <div id="detailScreen" class="screen">
-        <button class="back-btn" id="backBtn">← Назад</button>
-        <div id="detailContent"></div>
-      </div>
+    <div class="content" id="content">
+      <div class="empty">Загрузка...</div>
     </div>
   </div>
 
   <script>
     const SUPABASE_URL = 'https://fdvqlfmnppftzjvocbla.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkdnFsZm1ucHBmdHpqdm9jYmxhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1MDEyODAsImV4cCI6MjA4MTA3NzI4MH0.PX9t2L2zgg66JYSqv5nPyzCnZERY3lFEngIte5tIAUI';
-    const STORAGE_BUCKET = 'topics';
+    const BUCKET = 'topics';
+
+    let currentPath = '';
+    let navigationStack = [];
 
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     const tg = window.Telegram.WebApp;
 
-    let currentPath = '';
-    let navigationStack = [];
-    let userData = null;
-
-    function init() {
-      if (tg.initDataUnsafe?.user) {
-        const user = tg.initDataUnsafe.user;
-        userData = user;
-        document.getElementById('profileName').textContent = user.first_name;
-        document.getElementById('profileUsername').textContent = '@' + (user.username || 'user');
-        
+    async function init() {
+      console.log('[INIT] Инициализация приложения');
+      
+      // Устанавливаем аватар
+      const user = tg.initDataUnsafe?.user;
+      if (user) {
+        const avatar = document.getElementById('avatar');
         if (user.photo_url) {
-          document.getElementById('profileAvatar').innerHTML = `<img src="${user.photo_url}" alt="avatar">`;
+          avatar.innerHTML = `<img src="${user.photo_url}" alt="avatar">`;
         } else {
-          document.getElementById('profileAvatar').textContent = (user.first_name || 'U')[0];
+          avatar.textContent = (user.first_name || 'U')[0];
         }
       }
-      
-      setupEventListeners();
-      loadFileStructure();
+
+      // Загружаем файлы
+      await loadFiles('');
     }
 
-    function setupEventListeners() {
-      document.getElementById('backBtn').addEventListener('click', goBack);
-    }
-
-    async function loadFileStructure(path = '') {
-      const screen = document.getElementById('topicsScreen');
-      screen.innerHTML = '<div class="loading">Загрузка...</div>';
+    async function loadFiles(path) {
+      const content = document.getElementById('content');
+      content.innerHTML = '<div class="empty">Загрузка...</div>';
+      currentPath = path;
 
       try {
-        const { data, error } = await supabase.storage
-          .from(STORAGE_BUCKET)
+        console.log('[LOAD] Загружаем файлы для пути:', path || '(root)');
+        
+        // Получаем список файлов
+        const { data, error } = await supabase
+          .storage
+          .from(BUCKET)
           .list(path, { limit: 1000 });
 
+        console.log('[API] Ответ API:', { data, error });
+        console.log('[API] Количество элементов:', data?.length);
+
         if (error) {
-          console.error('Ошибка при загрузке:', error);
           throw error;
         }
 
         if (!data || data.length === 0) {
-          screen.innerHTML = '<div class="empty-state">Нет файлов и папок</div>';
+          content.innerHTML = `<div class="empty">
+            Нет файлов и папок
+            <div class="debug">Путь: "${path || '(root)'}"<br>Элементов: 0</div>
+          </div>`;
           return;
         }
 
+        // Разделяем папки и файлы
         const folders = data.filter(item => item.id === null);
         const files = data.filter(item => item.id !== null);
 
+        console.log('[PARSE] Папок:', folders.length, '| Файлов:', files.length);
+
         let html = '';
+        
+        if (path) {
+          html += `<button class="back-btn" onclick="goBack()">← Назад</button>`;
+        }
 
         // Добавляем папки
         folders.forEach(folder => {
-          html += `
-            <div class="folder-item" onclick="navigateToFolder('${path ? path + '/' : ''}${folder.name}')">
-              <div class="folder-icon">📁</div>
-              <div class="item-info">
-                <div class="item-name">${folder.name}</div>
-              </div>
-            </div>
-          `;
+          html += `<div class="item" onclick="loadFiles('${path ? path + '/' : ''}${folder.name}')">
+            <div class="item-icon">📁</div>
+            <div class="item-name">${folder.name}</div>
+          </div>`;
         });
 
         // Добавляем файлы
         files.forEach(file => {
-          const isMarkdown = file.name.endsWith('.md');
-          const icon = isMarkdown ? '📄' : '📎';
-          const fileSize = file.metadata ? (file.metadata.size / 1024).toFixed(1) + ' KB' : '';
-          
-          html += `
-            <div class="file-item" onclick="openFile('${path ? path + '/' : ''}${file.name}', '${file.name}')">
-              <div class="file-icon">${icon}</div>
-              <div class="item-info">
-                <div class="item-name">${file.name}</div>
-                ${fileSize ? `<div class="item-size">${fileSize}</div>` : ''}
-              </div>
+          const size = file.metadata?.size ? `${(file.metadata.size / 1024).toFixed(1)} KB` : '';
+          html += `<div class="item" onclick="openFile('${path ? path + '/' : ''}${file.name}')">
+            <div class="item-icon">📄</div>
+            <div>
+              <div class="item-name">${file.name}</div>
+              ${size ? `<div class="item-size">${size}</div>` : ''}
             </div>
-          `;
+          </div>`;
         });
 
-        screen.innerHTML = html;
-        currentPath = path;
+        content.innerHTML = html;
       } catch (e) {
-        console.error('Ошибка:', e);
-        screen.innerHTML = '<div class="empty-state">Ошибка загрузки файлов</div>';
+        console.error('[ERROR] Ошибка:', e);
+        content.innerHTML = `<div class="error">
+          <strong>Ошибка загрузки:</strong><br>
+          ${e.message}
+          <div class="debug">${JSON.stringify(e, null, 2)}</div>
+        </div>`;
       }
     }
 
-    async function openFile(filePath, fileName) {
-      const detailScreen = document.getElementById('detailScreen');
-      const detailContent = document.getElementById('detailContent');
+    async function openFile(filePath) {
+      console.log('[OPEN] Открываем файл:', filePath);
       
-      detailContent.innerHTML = '<div class="loading">Загрузка файла...</div>';
-      detailScreen.classList.add('active');
-      document.getElementById('topicsScreen').classList.remove('active');
+      const content = document.getElementById('content');
+      content.innerHTML = '<div class="empty">Загрузка файла...</div>';
 
       try {
-        const { data, error } = await supabase.storage
-          .from(STORAGE_BUCKET)
+        const { data, error } = await supabase
+          .storage
+          .from(BUCKET)
           .download(filePath);
 
         if (error) throw error;
 
         const text = await data.text();
-        
-        if (fileName.endsWith('.md')) {
-          // Простой рендеринг Markdown
-          let html = text
-            .replace(/^### (.*?)$/gm, '<h3>$1</h3>')
-            .replace(/^## (.*?)$/gm, '<h2>$1</h2>')
-            .replace(/^# (.*?)$/gm, '<h1>$1</h1>')
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*(.*?)\*/g, '<em>$1</em>')
-            .replace(/\n/g, '<br>');
-          
-          detailContent.innerHTML = `<div style="font-size: 14px; line-height: 1.6; color: #333;">${html}</div>`;
-        } else {
-          detailContent.innerHTML = `<pre style="white-space: pre-wrap; word-wrap: break-word; font-size: 12px;">${text}</pre>`;
-        }
+        let html = `<button class="back-btn" onclick="loadFiles('${currentPath}')">← Назад</button>`;
+        html += `<pre style="white-space: pre-wrap; word-wrap: break-word; font-size: 12px;">${text}</pre>`;
+        content.innerHTML = html;
       } catch (e) {
-        console.error('Ошибка при загрузке файла:', e);
-        detailContent.innerHTML = '<div class="empty-state">Ошибка загрузки файла</div>';
+        console.error('[ERROR] Ошибка при открытии файла:', e);
+        content.innerHTML = `<div class="error">${e.message}</div>
+          <button class="back-btn" onclick="loadFiles('${currentPath}')">← Назад</button>`;
       }
-    }
-
-    function navigateToFolder(folderPath) {
-      navigationStack.push(currentPath);
-      loadFileStructure(folderPath);
     }
 
     function goBack() {
       if (navigationStack.length > 0) {
-        const previousPath = navigationStack.pop();
-        loadFileStructure(previousPath);
-        document.getElementById('detailScreen').classList.remove('active');
-        document.getElementById('topicsScreen').classList.add('active');
+        loadFiles(navigationStack.pop());
+      } else {
+        loadFiles('');
       }
     }
+
+    // При клике на папку, сохраняем текущий путь в стек
+    const originalLoadFiles = loadFiles;
+    loadFiles = function(path) {
+      if (path !== currentPath && currentPath) {
+        navigationStack.push(currentPath);
+      }
+      return originalLoadFiles.call(this, path);
+    };
 
     init();
   </script>
