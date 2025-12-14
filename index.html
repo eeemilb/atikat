@@ -74,7 +74,7 @@
       currentPath = path;
 
       try {
-        const { data, error } = await supabase.storage.from(BUCKET).list(path, { limit: 1000 });
+        const { data, error } = await supabase.storage.from(BUCKET).list(p'', 
         if (error) throw error;
 
         if (!data || data.length === 0) {
@@ -82,8 +82,31 @@
           return;
         }
 
-        const folders = data.filter(item => item.id === null);
-        const files = data.filter(item => item.id !== null);
+        const pathPrefix = path ? path + '/' : '';
+    const folderSet = new Set();
+    const fileList = [];
+    
+    data.forEach(item => {
+      if (item.id !== null) { // It's a file
+        if (item.name.startsWith(pathPrefix)) {
+          const relativePath = item.name.slice(pathPrefix.length);
+          if (relativePath.includes('/')) {
+            const folderName = relativePath.split('/')[0];
+            folderSet.add(folderName);
+          } else if (relativePath && !relativePath.startsWith('.')) {
+            fileList.push(item);
+          }
+        }
+      } else { // It's a folder from direct list response
+        if (!path || item.name.startsWith(path)) {
+          const parts = item.name.slice(pathPrefix.length).split('/');
+          if (parts[0]) folderSet.add(parts[0]);
+        }
+      }
+    });
+    
+    const folders = Array.from(folderSet).map(name => ({ name, id: null }));
+    const files = fileList;
 
         let html = '';
         if (path) {
