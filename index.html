@@ -7,7 +7,8 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/STLLoader.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/STLLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@r128/examples/js/controls/OrbitControls.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; overflow: hidden; }
@@ -26,13 +27,15 @@
     .empty { text-align: center; padding: 40px 20px; color: #999; }
     .error { background: #fee; padding: 12px; border-radius: 8px; color: #c33; margin: 8px 0; }
     .back-btn { padding: 8px 12px; background: #f0f0f0; border: none; border-radius: 6px; cursor: pointer; margin-bottom: 12px; }
-    .viewer { margin-top: 12px; border-radius: 8px; overflow: auto; max-height: calc(100vh - 200px); background: #fff; }
+    .viewer { margin-top: 12px; border-radius: 8px; overflow: hidden; max-height: calc(100vh - 200px); background: #fff; }
     .viewer img { max-width: 100%; height: auto; border-radius: 8px; display: block; }
     .viewer video, .viewer audio { width: 100%; border-radius: 8px; }
     .viewer iframe { width: 100%; height: 600px; border-radius: 8px; border: none; }
     .viewer pre { background: #f5f5f5; padding: 12px; border-radius: 8px; overflow: auto; font-size: 12px; line-height: 1.5; }
+    #canvas3d { width: 100%; height: 500px; border-radius: 8px; background: #f5f5f5; }
     .info-box { padding: 20px; text-align: center; color: #666; }
     .download-btn { color: #667eea; text-decoration: none; border: 1px solid #667eea; padding: 8px 16px; border-radius: 6px; display: inline-block; margin-top: 12px; }
+    .controls-hint { padding: 8px; background: #f0f7ff; border-radius: 6px; color: #666; font-size: 12px; margin-top: 8px; }
   </style>
 </head>
 <body>
@@ -54,6 +57,8 @@
     const BUCKET = 'topics';
     let currentPath = '';
     let pathStack = [];
+    let viewer3d = null;
+
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     const tg = window.Telegram.WebApp;
 
@@ -74,31 +79,25 @@
       const content = document.getElementById('content');
       content.innerHTML = '<div class="empty">Загружка...</div>';
       currentPath = path;
-
       try {
         const { data, error } = await supabase.storage.from(BUCKET).list(path, { limit: 1000 });
         if (error) throw error;
-
         if (!data || data.length === 0) {
           content.innerHTML = `<div class="empty">Нет файлов и папок</div>`;
           return;
         }
-
         const folders = data.filter(item => item.id === null);
         const files = data.filter(item => item.id !== null);
-
         let html = '';
         if (path) {
           html += `<button class="back-btn" onclick="goBack()">← Назад</button>`;
         }
-
         folders.forEach(folder => {
           html += `<div class="item" onclick="enterFolder('${path ? path + '/' : ''}${folder.name}')">
             <div class="item-icon">📁</div>
             <div class="item-name">${folder.name}</div>
           </div>`;
         });
-
         files.forEach(file => {
           const size = file.metadata?.size ? `${(file.metadata.size / 1024).toFixed(1)} KB` : '';
           html += `<div class="item" onclick="openFile('${path ? path + '/' : ''}${file.name}')">
@@ -109,7 +108,6 @@
             </div>
           </div>`;
         });
-
         content.innerHTML = html;
       } catch (e) {
         console.error('Error:', e);
@@ -117,17 +115,175 @@
       }
     }
 
+    class Viewer3D {
+      constructor(containerId) {
+        this.container = document.getElementById(containerId);
+        this.scene = null;
+        this.camera = null;
+        this.renderer = null;
+        this.controls = null;
+        this.mesh = null;
+      }
+
+      init() {
+        if (this.renderer) return;
+
+        const width = this.container.clientWidth;
+        const height = 500;
+
+        this.scene = new THREE.Scene();
+        this.scene.background = new THREE.Color(0xf5f5f5);
+
+        this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 10000);
+        this.camera.position.set(0, 0, 100);
+
+        this.renderer = new THREE.WebGLRenderer({ antialias: true });
+        this.renderer.setSize(width, height);
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.container.innerHTML = '';
+        this.container.appendChild(this.renderer.domElement);
+
+        const light1 = new THREE.DirectionalLight(0xffffff, 0.8);
+        light1.position.set(100, 100, 100);
+        this.scene.add(light1);
+
+        const light2 = new THREE.DirectionalLight(0xffffff, 0.4);
+        light2.position.set(-100, -100, -100);
+        this.scene.add(light2);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+        this.scene.add(ambientLight);
+
+        this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+        this.controls.enableDamping = true;
+        this.controls.dampingFactor = 0.05;
+        this.controls.enableZoom = true;
+        this.controls.autoRotate = false;
+
+        this.renderer.domElement.addEventListener('wheel', (e) => {
+          e.preventDefault();
+        }, false);
+
+        this.animate();
+      }
+
+      loadSTL(arrayBuffer) {
+        const geometry = this.parseSTL(arrayBuffer);
+        geometry.center();
+        geometry.computeVertexNormals();
+        geometry.computeBoundingBox();
+
+        if (this.mesh) {
+          this.scene.remove(this.mesh);
+        }
+
+        const material = new THREE.MeshPhongMaterial({ color: 0x4a90e2, shininess: 100 });
+        this.mesh = new THREE.Mesh(geometry, material);
+        this.scene.add(this.mesh);
+
+        this.fitCameraToObject();
+      }
+
+      parseSTL(arrayBuffer) {
+        const view = new DataView(arrayBuffer);
+        const isASCII = this.isASCIISTL(arrayBuffer);
+
+        if (isASCII) {
+          return this.parseASCIISTL(new TextDecoder().decode(arrayBuffer));
+        } else {
+          return this.parseBinarySTL(arrayBuffer);
+        }
+      }
+
+      isASCIISTL(arrayBuffer) {
+        const view = new Uint8Array(arrayBuffer);
+        const header = new TextDecoder().decode(view.slice(0, 5));
+        return header === 'solid';
+      }
+
+      parseBinarySTL(arrayBuffer) {
+        const view = new DataView(arrayBuffer);
+        const triangles = view.getUint32(80, true);
+        const geometry = new THREE.BufferGeometry();
+        const vertices = [];
+        const normals = [];
+
+        let offset = 84;
+        for (let i = 0; i < triangles; i++) {
+          const nx = view.getFloat32(offset, true);
+          const ny = view.getFloat32(offset + 4, true);
+          const nz = view.getFloat32(offset + 8, true);
+          offset += 12;
+
+          for (let j = 0; j < 3; j++) {
+            vertices.push(view.getFloat32(offset, true), view.getFloat32(offset + 4, true), view.getFloat32(offset + 8, true));
+            normals.push(nx, ny, nz);
+            offset += 12;
+          }
+          offset += 2;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices), 3));
+        geometry.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(normals), 3));
+        return geometry;
+      }
+
+      parseASCIISTL(data) {
+        const geometry = new THREE.BufferGeometry();
+        const vertices = [];
+        const normals = [];
+
+        const vertexPattern = /vertex\s+([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)\s+([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)\s+([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)/g;
+        const normalPattern = /facet\s+normal\s+([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)\s+([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)\s+([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)/g;
+
+        let normalMatch;
+        let currentNormal = [0, 0, 1];
+        while ((normalMatch = normalPattern.exec(data)) !== null) {
+          currentNormal = [parseFloat(normalMatch[1]), parseFloat(normalMatch[3]), parseFloat(normalMatch[5])];
+        }
+
+        let vertexMatch;
+        let vertexCount = 0;
+        while ((vertexMatch = vertexPattern.exec(data)) !== null) {
+          vertices.push(parseFloat(vertexMatch[1]), parseFloat(vertexMatch[3]), parseFloat(vertexMatch[5]));
+          normals.push(currentNormal[0], currentNormal[1], currentNormal[2]);
+          vertexCount++;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices), 3));
+        geometry.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(normals), 3));
+        return geometry;
+      }
+
+      fitCameraToObject() {
+        const bbox = this.mesh.geometry.boundingBox;
+        const size = bbox.getSize(new THREE.Vector3());
+        const center = bbox.getCenter(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const fov = this.camera.fov * (Math.PI / 180);
+        let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
+        cameraZ *= 1.5;
+        this.camera.position.z = cameraZ;
+        this.controls.target.copy(center);
+        this.controls.update();
+      }
+
+      animate() {
+        requestAnimationFrame(() => this.animate());
+        this.controls.update();
+        this.renderer.render(this.scene, this.camera);
+      }
+    }
+
     async function openFile(filePath) {
       const content = document.getElementById('content');
       content.innerHTML = '<div class="empty">Загружка файла...</div>';
-
       try {
         const fileName = filePath.split('/').pop();
         const ext = fileName.split('.').pop().toLowerCase();
         const url = supabase.storage.from(BUCKET).getPublicUrl(filePath).data.publicUrl;
         
         let html = `<button class="back-btn" onclick="loadFolder('${currentPath}')">← Назад</button>`;
-
         if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(ext)) {
           html += `<div class="viewer"><img src="${url}" alt="Изображение"></div>`;
         } else if (['mp4', 'avi', 'mov', 'mkv', 'webm'].includes(ext)) {
@@ -137,8 +293,22 @@
         } else if (ext === 'pdf') {
           html += `<div class="viewer"><iframe src="${url}"></iframe></div>`;
         } else if (ext === 'html') {
-html += `<div class="viewer"><iframe id="html-viewer" style="width: 100%; height: 600px; border: none;" sandboxed=""></iframe></div>`; setTimeout(async () => { const {data: fileData} = await supabase.storage.from(BUCKET).download(filePath); const text = await fileData.text(); document.getElementById('html-viewer').srcdoc = text; }, 100);        } else if (['stl', 'obj', 'gltf', 'glb'].includes(ext)) {
-          html += `<div class="viewer"><div class="info-box">3D Модель (${ext.toUpperCase()})<br><a href="${url}" download class="download-btn">Скачать</a></div></div>`;
+          html += `<div class="viewer"><iframe id="html-viewer" style="width: 100%; height: 600px; border: none;"></iframe></div>`;
+          setTimeout(async () => {
+            const {data: fileData} = await supabase.storage.from(BUCKET).download(filePath);
+            const text = await fileData.text();
+            document.getElementById('html-viewer').srcdoc = text;
+          }, 100);
+        } else if (['stl', 'obj', 'gltf', 'glb'].includes(ext)) {
+          html += `<div id="viewer3d" class="viewer"></div><div class="controls-hint">🖱️ Вращение: перетягивание мышкой | 🔍 Масштаб: скролл мышки или два пальца</div>`;
+          content.innerHTML = html;
+          viewer3d = new Viewer3D('viewer3d');
+          viewer3d.init();
+          const {data: fileData} = await supabase.storage.from(BUCKET).download(filePath);
+          if (ext === 'stl') {
+            viewer3d.loadSTL(fileData);
+          }
+          return;
         } else if (['step', 'stp', 'iges', 'igs'].includes(ext)) {
           html += `<div class="viewer"><div class="info-box">📐 CAD Модель (${ext.toUpperCase()})<br><p style="font-size: 12px; margin-top: 12px; color: #999;">Откройте в FreeCAD, Fusion 360 или SolidWorks</p><a href="${url}" download class="download-btn">Скачать</a></div></div>`;
         } else {
@@ -146,7 +316,6 @@ html += `<div class="viewer"><iframe id="html-viewer" style="width: 100%; height
           const text = await fileData.text();
           html += `<div class="viewer"><pre>${text.substring(0, 10000)}</pre></div>`;
         }
-
         content.innerHTML = html;
       } catch (e) {
         console.error('Error:', e);
