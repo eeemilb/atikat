@@ -227,9 +227,26 @@
         }
         
         // Разделяем папки и файлы
-        const folders = data.filter(item => item.id === null);
-        const files = data.filter(item => item.id !== null);
-        
+const folders = data.filter(item => item.id === null);
+    const files = data.filter(item => item.id !== null);
+    
+    // Если нет папок в ответе API, извлекаем их из путей файлов
+    if (folders.length === 0 && files.length > 0) {
+      const folderSet = new Set();
+      files.forEach(file => {
+        const pathParts = file.name.split('/');
+        // Если файл в подпапке, добавляем имя первой подпапки
+        if (pathParts.length > 1) {
+          folderSet.add(pathParts[0]);
+        }
+      });
+      // Преобразуем Set в объекты папок для API
+      folders.push(...Array.from(folderSet).map(folderName => ({
+        id: null,
+        name: folderName,
+        metadata: null
+      })));
+    }
         let html = '';
         
         // Добавляем папки
