@@ -6,8 +6,6 @@
   <title>АТИКАТ</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/stl-viewer@1.1.0/dist/index.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; overflow: hidden; }
@@ -26,13 +24,13 @@
     .empty { text-align: center; padding: 40px 20px; color: #999; }
     .error { background: #fee; padding: 12px; border-radius: 8px; color: #c33; margin: 8px 0; }
     .back-btn { padding: 8px 12px; background: #f0f0f0; border: none; border-radius: 6px; cursor: pointer; margin-bottom: 12px; }
-    .viewer { margin-top: 12px; border-radius: 8px; overflow: auto; max-height: calc(100vh - 200px); }
-    .viewer img { max-width: 100%; height: auto; border-radius: 8px; }
+    .viewer { margin-top: 12px; border-radius: 8px; overflow: auto; max-height: calc(100vh - 200px); background: #fff; }
+    .viewer img { max-width: 100%; height: auto; border-radius: 8px; display: block; }
     .viewer video, .viewer audio { width: 100%; border-radius: 8px; }
     .viewer iframe { width: 100%; height: 600px; border-radius: 8px; border: none; }
     .viewer pre { background: #f5f5f5; padding: 12px; border-radius: 8px; overflow: auto; font-size: 12px; line-height: 1.5; }
-    #stl-viewer { width: 100%; height: 600px; border-radius: 8px; }
-    .html-viewer { width: 100%; height: 600px; border-radius: 8px; border: none; }
+    .info-box { padding: 20px; text-align: center; color: #666; }
+    .download-btn { color: #667eea; text-decoration: none; border: 1px solid #667eea; padding: 8px 16px; border-radius: 6px; display: inline-block; margin-top: 12px; }
   </style>
 </head>
 <body>
@@ -72,7 +70,7 @@
 
     async function loadFolder(path) {
       const content = document.getElementById('content');
-      content.innerHTML = '<div class="empty">Загрузка...</div>';
+      content.innerHTML = '<div class="empty">Загружка...</div>';
       currentPath = path;
 
       try {
@@ -119,56 +117,31 @@
 
     async function openFile(filePath) {
       const content = document.getElementById('content');
-      content.innerHTML = '<div class="empty">Загрузка файла...</div>';
+      content.innerHTML = '<div class="empty">Загружка файла...</div>';
 
       try {
         const fileName = filePath.split('/').pop();
         const ext = fileName.split('.').pop().toLowerCase();
+        const url = supabase.storage.from(BUCKET).getPublicUrl(filePath).data.publicUrl;
         
         let html = `<button class="back-btn" onclick="loadFolder('${currentPath}')">← Назад</button>`;
 
         if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(ext)) {
-          const url = supabase.storage.from(BUCKET).getPublicUrl(filePath).data.publicUrl;
           html += `<div class="viewer"><img src="${url}" alt="Изображение"></div>`;
         } else if (['mp4', 'avi', 'mov', 'mkv', 'webm'].includes(ext)) {
-          const url = supabase.storage.from(BUCKET).getPublicUrl(filePath).data.publicUrl;
           html += `<div class="viewer"><video controls><source src="${url}"></video></div>`;
         } else if (['mp3', 'wav', 'flac', 'm4a'].includes(ext)) {
-          const url = supabase.storage.from(BUCKET).getPublicUrl(filePath).data.publicUrl;
           html += `<div class="viewer"><audio controls style="width: 100%;"><source src="${url}"></audio></div>`;
         } else if (ext === 'pdf') {
-          const url = supabase.storage.from(BUCKET).getPublicUrl(filePath).data.publicUrl;
           html += `<div class="viewer"><iframe src="${url}"></iframe></div>`;
         } else if (ext === 'html') {
-          const { data: fileData, error } = await supabase.storage.from(BUCKET).download(filePath);
-          if (error) throw error;
-          const text = await fileData.text();
-          html += `<div class="viewer"><iframe class="html-viewer" srcdoc="${text.replace(/"/g, '&quot;')}"></iframe></div>`;
+          html += `<div class="viewer"><iframe src="${url}" style="width: 100%; height: 600px; border-radius: 8px; border: none;"></iframe></div>`;
         } else if (['stl', 'obj', 'gltf', 'glb'].includes(ext)) {
-          const url = supabase.storage.from(BUCKET).getPublicUrl(filePath).data.publicUrl;
-          html += `<div class="viewer"><div id="stl-viewer"></div></div>`;
-          content.innerHTML = html;
-          setTimeout(() => {
-            const viewer = document.getElementById('stl-viewer');
-            viewer.innerHTML = `<stl-viewer model="${url}" style="width: 100%; height: 100%;"></stl-viewer>`;
-          }, 100);
-          return;
-        } else if (['step', 'stp', 'iges', 'iges'.toLowerCase()].includes(ext)) {
-          html += `<div class="viewer"><div style="padding: 20px; text-align: center; color: #999;">
-            <p>📐 3D модель (${ext.toUpperCase()})</p>
-            <p style="font-size: 12px; margin-top: 10px;">Откройте файл в CAD приложении (FreeCAD, Fusion 360, SolidWorks)</p>
-            <p style="font-size: 12px; margin-top: 20px;">
-              <a href="${supabase.storage.from(BUCKET).getPublicUrl(filePath).data.publicUrl}" download style="color: #667eea; text-decoration: none; border: 1px solid #667eea; padding: 8px 16px; border-radius: 6px; display: inline-block;">Скачать файл</a>
-            </p>
-          </div></div>`;
-        } else if (['txt', 'md', 'json', 'xml', 'html', 'css', 'js', 'py', 'c', 'cpp', 'h', 'asm'].includes(ext)) {
-          const { data: fileData, error } = await supabase.storage.from(BUCKET).download(filePath);
-          if (error) throw error;
-          const text = await fileData.text();
-          html += `<div class="viewer"><pre>${text.substring(0, 10000)}</pre></div>`;
+          html += `<div class="viewer"><div class="info-box">3D Модель (${ext.toUpperCase()})<br><a href="${url}" download class="download-btn">Скачать</a></div></div>`;
+        } else if (['step', 'stp', 'iges', 'igs'].includes(ext)) {
+          html += `<div class="viewer"><div class="info-box">📐 CAD Модель (${ext.toUpperCase()})<br><p style="font-size: 12px; margin-top: 12px; color: #999;">Откройте в FreeCAD, Fusion 360 или SolidWorks</p><a href="${url}" download class="download-btn">Скачать</a></div></div>`;
         } else {
-          const { data: fileData, error } = await supabase.storage.from(BUCKET).download(filePath);
-          if (error) throw error;
+          const { data: fileData } = await supabase.storage.from(BUCKET).download(filePath);
           const text = await fileData.text();
           html += `<div class="viewer"><pre>${text.substring(0, 10000)}</pre></div>`;
         }
