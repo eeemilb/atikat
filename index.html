@@ -7,140 +7,28 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #fff;
-      overflow: hidden;
-    }
-
-    .container {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-    }
-
-    header {
-      padding: 12px 16px;
-      border-bottom: 1px solid #eee;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .header-title {
-      font-size: 16px;
-      font-weight: 600;
-      flex: 1;
-      text-align: center;
-    }
-
-    .profile {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: #667eea;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 600;
-      font-size: 12px;
-    }
-
-    .avatar img {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    .content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px;
-    }
-
-    .item {
-      padding: 12px;
-      border: 1px solid #eee;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      transition: all 0.2s;
-    }
-
-    .item:hover {
-      background: #f5f5f5;
-      border-color: #ddd;
-    }
-
-    .item-icon {
-      font-size: 20px;
-      min-width: 24px;
-    }
-
-    .item-name {
-      flex: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .item-size {
-      font-size: 12px;
-      color: #999;
-    }
-
-    .empty {
-      text-align: center;
-      padding: 40px 20px;
-      color: #999;
-    }
-
-    .error {
-      background: #fee;
-      padding: 12px;
-      border-radius: 8px;
-      color: #c33;
-      margin: 8px 0;
-    }
-
-    .back-btn {
-      padding: 8px 12px;
-      background: #f0f0f0;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-bottom: 12px;
-    }
-
-    .debug {
-      font-size: 11px;
-      color: #999;
-      padding: 8px;
-      background: #fafafa;
-      border-radius: 4px;
-      margin-top: 8px;
-      font-family: monospace;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; overflow: hidden; }
+    .container { display: flex; flex-direction: column; height: 100vh; }
+    header { padding: 12px 16px; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; }
+    .header-title { font-size: 16px; font-weight: 600; flex: 1; text-align: center; }
+    .profile { display: flex; align-items: center; gap: 8px; }
+    .avatar { width: 32px; height: 32px; border-radius: 50%; background: #667eea; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 12px; }
+    .avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+    .content { flex: 1; overflow-y: auto; padding: 16px; }
+    .item { padding: 12px; border: 1px solid #eee; border-radius: 8px; margin-bottom: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.2s; }
+    .item:hover { background: #f5f5f5; border-color: #ddd; }
+    .item-icon { font-size: 20px; min-width: 24px; }
+    .item-name { flex: 1; font-size: 14px; font-weight: 500; }
+    .item-size { font-size: 12px; color: #999; }
+    .empty { text-align: center; padding: 40px 20px; color: #999; }
+    .error { background: #fee; padding: 12px; border-radius: 8px; color: #c33; margin: 8px 0; }
+    .back-btn { padding: 8px 12px; background: #f0f0f0; border: none; border-radius: 6px; cursor: pointer; margin-bottom: 12px; }
+    .viewer { margin-top: 12px; border-radius: 8px; overflow: auto; max-height: calc(100vh - 200px); }
+    .viewer img { max-width: 100%; height: auto; border-radius: 8px; }
+    .viewer video, .viewer audio { width: 100%; border-radius: 8px; }
+    .viewer iframe { width: 100%; height: 600px; border-radius: 8px; border: none; }
+    .viewer pre { background: #f5f5f5; padding: 12px; border-radius: 8px; overflow: auto; font-size: 12px; line-height: 1.5; }
   </style>
 </head>
 <body>
@@ -151,8 +39,7 @@
         <div class="avatar" id="avatar">?</div>
       </div>
     </header>
-
-    <div class="content" id="content">
+    <div id="content" class="content">
       <div class="empty">Загрузка...</div>
     </div>
   </div>
@@ -161,17 +48,12 @@
     const SUPABASE_URL = 'https://fdvqlfmnppftzjvocbla.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkdnFsZm1ucHBmdHpqdm9jYmxhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1MDEyODAsImV4cCI6MjA4MTA3NzI4MH0.PX9t2L2zgg66JYSqv5nPyzCnZERY3lFEngIte5tIAUI';
     const BUCKET = 'topics';
-
     let currentPath = '';
-    let navigationStack = [];
-
+    let pathStack = [];
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     const tg = window.Telegram.WebApp;
 
     async function init() {
-      console.log('[INIT] Инициализация приложения');
-      
-      // Устанавливаем аватар
       const user = tg.initDataUnsafe?.user;
       if (user) {
         const avatar = document.getElementById('avatar');
@@ -181,61 +63,38 @@
           avatar.textContent = (user.first_name || 'U')[0];
         }
       }
-
-      // Загружаем файлы
-      await loadFiles('');
+      await loadFolder('');
     }
 
-    async function loadFiles(path) {
+    async function loadFolder(path) {
       const content = document.getElementById('content');
       content.innerHTML = '<div class="empty">Загрузка...</div>';
       currentPath = path;
 
       try {
-        console.log('[LOAD] Загружаем файлы для пути:', path || '(root)');
-        
-        // Получаем список файлов
-        const { data, error } = await supabase
-          .storage
-          .from(BUCKET)
-          .list(path, { limit: 1000 });
-
-        console.log('[API] Ответ API:', { data, error });
-        console.log('[API] Количество элементов:', data?.length);
-
-        if (error) {
-          throw error;
-        }
+        const { data, error } = await supabase.storage.from(BUCKET).list(path, { limit: 1000 });
+        if (error) throw error;
 
         if (!data || data.length === 0) {
-          content.innerHTML = `<div class="empty">
-            Нет файлов и папок
-            <div class="debug">Путь: "${path || '(root)'}"<br>Элементов: 0</div>
-          </div>`;
+          content.innerHTML = `<div class="empty">Нет файлов и папок</div>`;
           return;
         }
 
-        // Разделяем папки и файлы
         const folders = data.filter(item => item.id === null);
         const files = data.filter(item => item.id !== null);
 
-        console.log('[PARSE] Папок:', folders.length, '| Файлов:', files.length);
-
         let html = '';
-        
         if (path) {
           html += `<button class="back-btn" onclick="goBack()">← Назад</button>`;
         }
 
-        // Добавляем папки
         folders.forEach(folder => {
-          html += `<div class="item" onclick="loadFiles('${path ? path + '/' : ''}${folder.name}')">
+          html += `<div class="item" onclick="enterFolder('${path ? path + '/' : ''}${folder.name}')">
             <div class="item-icon">📁</div>
             <div class="item-name">${folder.name}</div>
           </div>`;
         });
 
-        // Добавляем файлы
         files.forEach(file => {
           const size = file.metadata?.size ? `${(file.metadata.size / 1024).toFixed(1)} KB` : '';
           html += `<div class="item" onclick="openFile('${path ? path + '/' : ''}${file.name}')">
@@ -249,56 +108,74 @@
 
         content.innerHTML = html;
       } catch (e) {
-        console.error('[ERROR] Ошибка:', e);
-        content.innerHTML = `<div class="error">
-          <strong>Ошибка загрузки:</strong><br>
-          ${e.message}
-          <div class="debug">${JSON.stringify(e, null, 2)}</div>
-        </div>`;
+        console.error('Error:', e);
+        content.innerHTML = `<div class="error"><strong>Ошибка:</strong><br>${e.message}</div>`;
       }
     }
 
     async function openFile(filePath) {
-      console.log('[OPEN] Открываем файл:', filePath);
-      
       const content = document.getElementById('content');
       content.innerHTML = '<div class="empty">Загрузка файла...</div>';
 
       try {
-        const { data, error } = await supabase
-          .storage
-          .from(BUCKET)
-          .download(filePath);
+        const fileName = filePath.split('/').pop();
+        const ext = fileName.split('.').pop().toLowerCase();
+        
+        let html = `<button class="back-btn" onclick="loadFolder('${currentPath}')">← Назад</button>`;
 
-        if (error) throw error;
+        // Image files
+        if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(ext)) {
+          const url = supabase.storage.from(BUCKET).getPublicUrl(filePath).data.publicUrl;
+          html += `<div class="viewer"><img src="${url}" alt="Изображение"></div>`;
+        }
+        // Video files
+        else if (['mp4', 'avi', 'mov', 'mkv', 'webm'].includes(ext)) {
+          const url = supabase.storage.from(BUCKET).getPublicUrl(filePath).data.publicUrl;
+          html += `<div class="viewer"><video controls><source src="${url}"></video></div>`;
+        }
+        // Audio files
+        else if (['mp3', 'wav', 'flac', 'm4a'].includes(ext)) {
+          const url = supabase.storage.from(BUCKET).getPublicUrl(filePath).data.publicUrl;
+          html += `<div class="viewer"><audio controls style="width: 100%;"><source src="${url}"></audio></div>`;
+        }
+        // PDF files
+        else if (ext === 'pdf') {
+          const url = supabase.storage.from(BUCKET).getPublicUrl(filePath).data.publicUrl;
+          html += `<div class="viewer"><iframe src="${url}"></iframe></div>`;
+        }
+        // Text files
+        else if (['txt', 'md', 'json', 'xml', 'html', 'css', 'js'].includes(ext)) {
+          const { data: fileData, error } = await supabase.storage.from(BUCKET).download(filePath);
+          if (error) throw error;
+          const text = await fileData.text();
+          html += `<div class="viewer"><pre>${text.substring(0, 10000)}</pre></div>`;
+        }
+        // Default: try to show as text
+        else {
+          const { data: fileData, error } = await supabase.storage.from(BUCKET).download(filePath);
+          if (error) throw error;
+          const text = await fileData.text();
+          html += `<div class="viewer"><pre>${text.substring(0, 10000)}</pre></div>`;
+        }
 
-        const text = await data.text();
-        let html = `<button class="back-btn" onclick="loadFiles('${currentPath}')">← Назад</button>`;
-        html += `<pre style="white-space: pre-wrap; word-wrap: break-word; font-size: 12px;">${text}</pre>`;
         content.innerHTML = html;
       } catch (e) {
-        console.error('[ERROR] Ошибка при открытии файла:', e);
-        content.innerHTML = `<div class="error">${e.message}</div>
-          <button class="back-btn" onclick="loadFiles('${currentPath}')">← Назад</button>`;
+        console.error('Error:', e);
+        content.innerHTML = `<button class="back-btn" onclick="loadFolder('${currentPath}')">← Назад</button><div class="error">Ошибка: ${e.message}</div>`;
       }
+    }
+
+    function enterFolder(path) {
+      pathStack.push(currentPath);
+      loadFolder(path);
     }
 
     function goBack() {
-      if (navigationStack.length > 0) {
-        loadFiles(navigationStack.pop());
-      } else {
-        loadFiles('');
+      if (pathStack.length > 0) {
+        const previousPath = pathStack.pop();
+        loadFolder(previousPath);
       }
     }
-
-    // При клике на папку, сохраняем текущий путь в стек
-    const originalLoadFiles = loadFiles;
-    loadFiles = function(path) {
-      if (path !== currentPath && currentPath) {
-        navigationStack.push(currentPath);
-      }
-      return originalLoadFiles.call(this, path);
-    };
 
     init();
   </script>
