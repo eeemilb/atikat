@@ -257,13 +257,10 @@
         let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
         cameraZ *= 1.5;
         this.camera.position.z = cameraZ;
-        this.controls.target.copy(center);
-        this.controls.update();
       }
 
       animate() {
         requestAnimationFrame(() => this.animate());
-        this.controls.update();
         this.renderer.render(this.scene, this.camera);
       }
     }
