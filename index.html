@@ -8,13 +8,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/STLLoader.js"></script>
-    <script type="module">
-    // Динамическая загрузка Three.js модулей
-    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@r128/build/three.module.js';
-    import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@r128/examples/jsm/controls/OrbitControls.js';
-    window.THREE = THREE;
-    window.OrbitControls = OrbitControls;
-  </script>
+    script>
+    <script src="https://cdn.jsdelivr.net/npm/three-orbit-controls@1.5.0/dist/three-orbit-controls.umd.js"></script>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; overflow: hidden; }
     .container { display: flex; flex-direction: column; height: 100vh; }
@@ -159,7 +154,7 @@
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
         this.scene.add(ambientLight);
 
-        this.controls = new window.OrbitControls(this.camera, this.renderer.domElement);
+        this.controls = new ThreeOrbitControls(this.camera, this.renderer.domElement);
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
         this.controls.enableZoom = true;
