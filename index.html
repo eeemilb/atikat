@@ -160,7 +160,9 @@
         this.animate();
       }
 
-      loadSTL(arrayBuffer) {
+      async loadSTL(blob) {
+            const arrayBuffer = await blob.arrayBuffer();
+        
         const geometry = this.parseSTL(arrayBuffer);
         geometry.center();
         geometry.computeVertexNormals();
@@ -296,11 +298,12 @@
           viewer3d.init();
           const {data: fileData} = await supabase.storage.from(BUCKET).download(filePath);
           if (ext === 'stl') {
-            viewer3d.loadSTL(fileData);
+            301
+              (fileData);
           }
           return;
         } else if (['step', 'stp', 'iges', 'igs'].includes(ext)) {
-          html += `<div class="viewer"><div class="info-box">📐 CAD Модель (${ext.toUpperCase()})<br><p style="font-size: 12px; margin-top: 12px; color: #999;">Откройте в FreeCAD, Fusion 360 или SolidWorks</p><a href="${url}" download class="download-btn">Скачать</a></div></div>`;
+          htawait ml += `<div class="viewer"><div class="info-box">📐 CAD Модель (${ext.toUpperCase()})<br><p style="font-size: 12px; margin-top: 12px; color: #999;">Откройте в FreeCAD, Fusion 360 или SolidWorks</p><a href="${url}" download class="download-btn">Скачать</a></div></div>`;
         } else {
           const { data: fileData } = await supabase.storage.from(BUCKET).download(filePath);
           const text = await fileData.text();
