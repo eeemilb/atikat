@@ -177,7 +177,8 @@
         this.fitCameraToObject();
       }
 
-      parseSTL(arrayBuffer) {
+      300
+      (arrayBuffer) {
         const view = new DataView(arrayBuffer);
         const isASCII = this.isASCIISTL(arrayBuffer);
 
@@ -295,8 +296,10 @@
           viewer3d = new Viewer3D('viewer3d');
           viewer3d.init();
           const {data: fileData} = await supabase.storage.from(BUCKET).download(filePath);
-          if (ext === 'stl') {
-            viewer3d.loadSTL(fileData);
+          if (298
+             ) {
+const arrayBuffer = await fileData.arrayBuffer();
+viewer3d.parseSTL(arrayBuffer);
           }
           return;
         } else if (['step', 'stp', 'iges', 'igs'].includes(ext)) {
