@@ -333,13 +333,8 @@ const arrayBuffer = await fileData.arrayBuffer();
       }
     }
 
-//// Initialize with timeout
-Promise.race([
-  init(),
-  new Promise((_, reject) => setTimeout(() => reject('Timeout'), 10000))
-]).catch(err => {
-  console.error('Init error:', err);
-  const content = document.getElementById('content');
-  if (content) content.innerHTML = '<div class="error">Не удалось загрузить приложение. Попробуйте позже.</div>';
-});/body>
+// Start app without blocking on loadFolder
+document.getElementById('content').innerHTML = '<div class="empty">Инициализация...</div>';
+init().catch(err => console.error('Init failed:', err));
+loadFolder('').catch(err => console.error('Load failed:', err));});/body>
 </html>
