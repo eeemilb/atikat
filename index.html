@@ -330,10 +330,13 @@ const arrayBuffer = await fileData.arrayBuffer();
       }
     }
 
-// Initialize app
-try {
-  init();
-} catch (e) {
-  console.error('Init error:', e);
-}</body>
+//// Initialize with timeout
+Promise.race([
+  init(),
+  new Promise((_, reject) => setTimeout(() => reject('Timeout'), 10000))
+]).catch(err => {
+  console.error('Init error:', err);
+  const content = document.getElementById('content');
+  if (content) content.innerHTML = '<div class="error">Не удалось загрузить приложение. Попробуйте позже.</div>';
+});/body>
 </html>
