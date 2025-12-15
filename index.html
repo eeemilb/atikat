@@ -8,7 +8,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/STLLoader.js"></script>
-  <style>    * { margin: 0; padding: 0; box-sizing: border-box; }
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; overflow: hidden; }
     .container { display: flex; flex-direction: column; height: 100vh; }
     header { padding: 12px 16px; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; }
@@ -56,7 +57,6 @@
     let currentPath = '';
     let pathStack = [];
     let viewer3d = null;
-
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     const tg = window.Telegram.WebApp;
 
@@ -80,25 +80,27 @@
       try {
         const { data, error } = await supabase.storage.from(BUCKET).list(path, { limit: 1000 });
         if (error) throw error;
-        console.log('Supabase response:', {data, error, length: data?.length});
-  if (error) content.innerHTML += '<div style="color:red">ERROR: ' + error.message + '</div>';
         
         if (!data || data.length === 0) {
           content.innerHTML = `<div class="empty">Нет файлов и папок</div>`;
           return;
         }
+        
         const folders = data.filter(item => item.id === null);
         const files = data.filter(item => item.id !== null);
         let html = '';
+        
         if (path) {
           html += `<button class="back-btn" onclick="goBack()">← Назад</button>`;
         }
+        
         folders.forEach(folder => {
           html += `<div class="item" onclick="enterFolder('${path ? path + '/' : ''}${folder.name}')">
             <div class="item-icon">📁</div>
             <div class="item-name">${folder.name}</div>
           </div>`;
         });
+        
         files.forEach(file => {
           const size = file.metadata?.size ? `${(file.metadata.size / 1024).toFixed(1)} KB` : '';
           html += `<div class="item" onclick="openFile('${path ? path + '/' : ''}${file.name}')">
@@ -109,6 +111,7 @@
             </div>
           </div>`;
         });
+        
         content.innerHTML = html;
       } catch (e) {
         console.error('Error:', e);
@@ -116,77 +119,65 @@
       }
     }
 
-    116
-    {
+    class Viewer3D {
       constructor(containerId) {
         this.container = document.getElementById(containerId);
         this.scene = null;
         this.camera = null;
         this.renderer = null;
-        this.controls = null;
         this.mesh = null;
       }
 
       init() {
         if (this.renderer) return;
-
         const width = this.container.clientWidth;
         const height = 500;
-
+        
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0xf5f5f5);
-
         this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 10000);
         this.camera.position.set(0, 0, 100);
-
+        
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.setSize(width, height);
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.container.innerHTML = '';
         this.container.appendChild(this.renderer.domElement);
-
+        
         const light1 = new THREE.DirectionalLight(0xffffff, 0.8);
         light1.position.set(100, 100, 100);
         this.scene.add(light1);
-
+        
         const light2 = new THREE.DirectionalLight(0xffffff, 0.4);
         light2.position.set(-100, -100, -100);
         this.scene.add(light2);
-
+        
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
         this.scene.add(ambientLight);
-
-
-        this.renderer.domElement.addEventListener('wheel', (e) => {
-          e.preventDefault();
-        }, false);
-
+        
         this.animate();
       }
 
       loadSTL(arrayBuffer) {
-        const geometry = this.160
-          arrayBuffer);
+        const geometry = this.parseSTL(arrayBuffer);
         geometry.center();
         geometry.computeVertexNormals();
         geometry.computeBoundingBox();
-
+        
         if (this.mesh) {
           this.scene.remove(this.mesh);
         }
-
+        
         const material = new THREE.MeshPhongMaterial({ color: 0x4a90e2, shininess: 100 });
         this.mesh = new THREE.Mesh(geometry, material);
         this.scene.add(this.mesh);
-
         this.fitCameraToObject();
       }
 
-      300
-      (arrayBuffer) {
+      parseSTL(arrayBuffer) {
         const view = new DataView(arrayBuffer);
         const isASCII = this.isASCIISTL(arrayBuffer);
-
+        
         if (isASCII) {
           return this.parseASCIISTL(new TextDecoder().decode(arrayBuffer));
         } else {
@@ -206,14 +197,14 @@
         const geometry = new THREE.BufferGeometry();
         const vertices = [];
         const normals = [];
-
         let offset = 84;
+        
         for (let i = 0; i < triangles; i++) {
           const nx = view.getFloat32(offset, true);
           const ny = view.getFloat32(offset + 4, true);
           const nz = view.getFloat32(offset + 8, true);
           offset += 12;
-
+          
           for (let j = 0; j < 3; j++) {
             vertices.push(view.getFloat32(offset, true), view.getFloat32(offset + 4, true), view.getFloat32(offset + 8, true));
             normals.push(nx, ny, nz);
@@ -221,7 +212,7 @@
           }
           offset += 2;
         }
-
+        
         geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices), 3));
         geometry.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(normals), 3));
         return geometry;
@@ -231,24 +222,22 @@
         const geometry = new THREE.BufferGeometry();
         const vertices = [];
         const normals = [];
-
+        
         const vertexPattern = /vertex\s+([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)\s+([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)\s+([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)/g;
         const normalPattern = /facet\s+normal\s+([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)\s+([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)\s+([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)/g;
-
+        
         let normalMatch;
         let currentNormal = [0, 0, 1];
         while ((normalMatch = normalPattern.exec(data)) !== null) {
           currentNormal = [parseFloat(normalMatch[1]), parseFloat(normalMatch[3]), parseFloat(normalMatch[5])];
         }
-
+        
         let vertexMatch;
-        let vertexCount = 0;
         while ((vertexMatch = vertexPattern.exec(data)) !== null) {
           vertices.push(parseFloat(vertexMatch[1]), parseFloat(vertexMatch[3]), parseFloat(vertexMatch[5]));
           normals.push(currentNormal[0], currentNormal[1], currentNormal[2]);
-          vertexCount++;
         }
-
+        
         geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices), 3));
         geometry.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(normals), 3));
         return geometry;
@@ -257,7 +246,6 @@
       fitCameraToObject() {
         const bbox = this.mesh.geometry.boundingBox;
         const size = bbox.getSize(new THREE.Vector3());
-        const center = bbox.getCenter(new THREE.Vector3());
         const maxDim = Math.max(size.x, size.y, size.z);
         const fov = this.camera.fov * (Math.PI / 180);
         let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
@@ -274,12 +262,14 @@
     async function openFile(filePath) {
       const content = document.getElementById('content');
       content.innerHTML = '<div class="empty">Загружка файла...</div>';
+      
       try {
         const fileName = filePath.split('/').pop();
         const ext = fileName.split('.').pop().toLowerCase();
         const url = supabase.storage.from(BUCKET).getPublicUrl(filePath).data.publicUrl;
         
         let html = `<button class="back-btn" onclick="loadFolder('${currentPath}')">← Назад</button>`;
+        
         if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(ext)) {
           html += `<div class="viewer"><img src="${url}" alt="Изображение"></div>`;
         } else if (['mp4', 'avi', 'mov', 'mkv', 'webm'].includes(ext)) {
@@ -290,30 +280,28 @@
           html += `<div class="viewer"><iframe src="${url}"></iframe></div>`;
         } else if (ext === 'html') {
           html += `<div class="viewer"><iframe id="html-viewer" style="width: 100%; height: 600px; border: none;"></iframe></div>`;
+          content.innerHTML = html;
           setTimeout(async () => {
             const {data: fileData} = await supabase.storage.from(BUCKET).download(filePath);
             const text = await fileData.text();
             document.getElementById('html-viewer').srcdoc = text;
           }, 100);
+          return;
         } else if (['stl', 'obj', 'gltf', 'glb'].includes(ext)) {
-          html += `<div id="viewer3d" class="viewer"></div><div class="controls-hint">🖱️ Вращение: перетягивание мышкой | 🔍 Масштаб: скролл мышки или два пальца</div>`;
+          html += `<div id="viewer3d" class="viewer"></div><div class="controls-hint">🗑️ Вращение: перетягивание мышкой | 🔍 Масштаб: скролл мышки или два пальца</div>`;
           content.innerHTML = html;
           viewer3d = new Viewer3D('viewer3d');
           viewer3d.init();
           const {data: fileData} = await supabase.storage.from(BUCKET).download(filePath);
-          if (298
-             ) {
-const arrayBuffer = await fileData.arrayBuffer();
-            loadSTL(arrayBuffer);
-          }
+          const arrayBuffer = await fileData.arrayBuffer();
+          viewer3d.loadSTL(arrayBuffer);
           return;
-        } else if (['step', 'stp', 'iges', 'igs'].includes(ext)) {
-          html += `<div class="viewer"><div class="info-box">📐 CAD Модель (${ext.toUpperCase()})<br><p style="font-size: 12px; margin-top: 12px; color: #999;">Откройте в FreeCAD, Fusion 360 или SolidWorks</p><a href="${url}" download class="download-btn">Скачать</a></div></div>`;
         } else {
           const { data: fileData } = await supabase.storage.from(BUCKET).download(filePath);
           const text = await fileData.text();
           html += `<div class="viewer"><pre>${text.substring(0, 10000)}</pre></div>`;
         }
+        
         content.innerHTML = html;
       } catch (e) {
         console.error('Error:', e);
@@ -333,8 +321,10 @@ const arrayBuffer = await fileData.arrayBuffer();
       }
     }
 
-// Start app without blocking on loadFolder
-document.getElementById('content').innerHTML = '<div class="empty">Инициализация...</div>';
-init().catch(err => console.error('Init failed:', err));
-loadFolder('').catch(err => console.error('Load failed:', err));});/body>
+    // Запуск приложения
+    document.getElementById('content').innerHTML = '<div class="empty">Инициализация...</div>';
+    init().catch(err => console.error('Init failed:', err));
+    loadFolder('').catch(err => console.error('Load failed:', err));
+  </script>
+</body>
 </html>
