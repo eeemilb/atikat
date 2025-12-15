@@ -113,7 +113,8 @@
       }
     }
 
-    class Viewer3D {
+    116
+    {
       constructor(containerId) {
         this.container = document.getElementById(containerId);
         this.scene = null;
@@ -161,7 +162,8 @@
       }
 
       loadSTL(arrayBuffer) {
-        const geometry = this.parseSTL(arrayBuffer);
+        const geometry = this.160
+          arrayBuffer);
         geometry.center();
         geometry.computeVertexNormals();
         geometry.computeBoundingBox();
@@ -299,7 +301,7 @@
           if (298
              ) {
 const arrayBuffer = await fileData.arrayBuffer();
-viewer3d.loadSTL(arrayBuffer);
+            loadSTL(arrayBuffer);
           }
           return;
         } else if (['step', 'stp', 'iges', 'igs'].includes(ext)) {
