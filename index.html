@@ -80,6 +80,9 @@
       try {
         const { data, error } = await supabase.storage.from(BUCKET).list(path, { limit: 1000 });
         if (error) throw error;
+        console.log('Supabase response:', {data, error, length: data?.length});
+  if (error) content.innerHTML += '<div style="color:red">ERROR: ' + error.message + '</div>';
+        
         if (!data || data.length === 0) {
           content.innerHTML = `<div class="empty">Нет файлов и папок</div>`;
           return;
