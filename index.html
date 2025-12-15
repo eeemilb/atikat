@@ -330,7 +330,16 @@ const arrayBuffer = await fileData.arrayBuffer();
       }
     }
 
-    init();
-  </script>
+ // Wait for Telegram WebApp to be ready
+if (window.Telegram?.WebApp?.ready) {
+  tg.ready();
+  init();
+} else if (window.Telegram?.WebApp) {
+  tg.ready();
+  init();
+} else {
+  // Fallback for non-Telegram environments
+  setTimeout(init, 100);
+}  </script>
 </body>
 </html>
