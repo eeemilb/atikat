@@ -325,6 +325,7 @@
     }
 
     // Запуск приложения
+    initTheme(); initProfileMenu();
     document.getElementById('content').innerHTML = '<div class="empty">Инициализация...</div>';
     init().catch(err => console.error('Init failed:', err));
     loadFolder('').catch(err => console.error('Load failed:', err));
