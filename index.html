@@ -75,7 +75,7 @@
 
     async function loadFolder(path) {
       const content = document.getElementById('content');
-      content.innerHTML = '<div class="empty">Загружка...</div>';
+      content.innerHTML = '<div class="empty">...</div>';
       currentPath = path;
       try {
         const { data, error } = await supabase.storage.from(BUCKET).list(path, { limit: 1000 });
@@ -264,7 +264,7 @@
 
     async function openFile(filePath) {
       const content = document.getElementById('content');
-      content.innerHTML = '<div class="empty">Загружка файла...</div>';
+      content.innerHTML = '<div class="empty"> файла...</div>';
       
       try {
         const fileName = filePath.split('/').pop();
@@ -324,6 +324,13 @@
       }
     }
 
+    function initTheme() {
+        tg.setHeaderColor('#ffffff');
+      }
+
+    function initProfileMenu() {
+        // Initialize profile menu
+      }
     // Запуск приложения
     initTheme(); initProfileMenu();
     document.getElementById('content').innerHTML = '<div class="empty">Инициализация...</div>';
