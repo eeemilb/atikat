@@ -368,7 +368,6 @@
           content.innerHTML = html;
           viewer3d = new Viewer3D('viewer3d');
           viewer3d.init();
-                    viewer3d.setupControls();
           const {data: fileData} = await supabase.storage.from(BUCKET).download(filePath);
           const arrayBuffer = await fileData.arrayBuffer();
           viewer3d.loadSTL(arrayBuffer);
