@@ -39,6 +39,8 @@
     .controls-hint { padding: 8px; background: #f0f7ff; border-radius: 6px; color: #666; font-size: 12px; margin-top: 8px; }
      .back-btn-header { padding: 8px 12px; background: rgba(30,30,50,0.5); border: 1px solid rgba(255,215,0,0.2); border-radius: 8px; cursor: pointer; color: #ffd700; font-weight: 600; font-size: 12px; backdrop-filter: blur(10px); transition: all 0.3s; }
      .back-btn-header:hover { background: rgba(30,30,50,0.8); border-color: rgba(255,215,0,0.4); box-shadow: 0 0 15px rgba(255,215,0,0.2); }
+     @keyframes clickPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,215,0,0.7); } 50% { transform: scale(0.95); } 100% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255,215,0,0); } }
+     .item-clicked { animation: clickPulse 0.4s ease-out; }
   </style>
 </head>
 <body>
@@ -342,6 +344,8 @@
     document.getElementById('content').innerHTML = '<div class="empty">Инициализация...</div>';
     init().catch(err => console.error('Init failed:', err));
     loadFolder('').catch(err => console.error('Load failed:', err));
+
+     function enableItemAnimations() { const items = document.querySelectorAll('.item'); items.forEach(item => { item.addEventListener('click', function(e) { this.classList.add('item-clicked'); setTimeout(() => this.classList.remove('item-clicked'), 400); }); }); } setTimeout(enableItemAnimations, 500);
   </script>
 </body>
 </html>
