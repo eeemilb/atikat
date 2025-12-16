@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>АТИКАТ</title>
+  <title>Space Lab</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -40,13 +40,13 @@
 <body>
   <div class="container">
     <header>
-      <div class="header-title">АТИКАТ</div>
+      <div class="header-title">Space Lab</div>
       <div class="profile">
         <div class="avatar" id="avatar">?</div>
       </div>
     </header>
     <div id="content" class="content">
-      <div class="empty">Загрузка...</div>
+      <div class="empty">Загрузка... Подожди пару секунд</div>
     </div>
   </div>
 
@@ -82,7 +82,7 @@
         if (error) throw error;
         
         if (!data || data.length === 0) {
-          content.innerHTML = `<div class="empty">Нет файлов и папок</div>`;
+          content.innerHTML = `<div class="empty">Что-то пошло не так. Нет файлов и папок</div>`;
           return;
         }
         
@@ -291,7 +291,7 @@
           }, 100);
           return;
         } else if (['stl', 'obj', 'gltf', 'glb'].includes(ext)) {
-          html += `<div id="viewer3d" class="viewer"></div><div class="controls-hint">🗑️ Вращение: перетягивание мышкой | 🔍 Масштаб: скролл мышки или два пальца</div>`;
+          html += `<div id="viewer3d" class="viewer"></div><div class="controls-hint">🗑️ Вращение: перетягивание мышкой или пальцем | 🔍 Масштаб: скролл мышки или два пальца</div>`;
           content.innerHTML = html;
           viewer3d = new Viewer3D('viewer3d');
           viewer3d.init();
