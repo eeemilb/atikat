@@ -348,6 +348,7 @@
     document.getElementById('content').innerHTML = '<div class="empty">Инициализация...</div>';
     init().catch(err => console.error('Init failed:', err));
     loadFolder('').catch(err => console.error('Load failed:', err));
+     setTimeout(loadFolderImages, 100);
 
      function enableItemAnimations() { const items = document.querySelectorAll('.item'); items.forEach(item => { item.addEventListener('click', function(e) { this.classList.add('item-clicked'); setTimeout(() => this.classList.remove('item-clicked'), 400); }); }); } setTimeout(enableItemAnimations, 500);
 
