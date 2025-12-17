@@ -349,7 +349,19 @@
 
      function enableItemAnimations() { const items = document.querySelectorAll('.item'); items.forEach(item => { item.addEventListener('click', function(e) { this.classList.add('item-clicked'); setTimeout(() => this.classList.remove('item-clicked'), 400); }); }); } setTimeout(enableItemAnimations, 500);
 
-     function loadFolderDescriptions() { document.querySelectorAll('.item-description').forEach(async (el) => { const folderPath = el.getAttribute('data-folder'); if (!folderPath) return; try { const readmePath = folderPath + '/Read.md'; const { data } = await supabase.storage.from(BUCKET).download(readmePath); const text = await data.text(); const firstParagraph = text.split('\n\n').slice(0, 4).join('\n\n') || ''; el.textContent = firstParagraph.substring(0, 150); } catch (err) { el.textContent = ''; } }); }
-  </script>
-</body>
+function loadFolderDescriptions() {
+    document.querySelectorAll('.item-description').forEach(async (el) => {
+      const folderPath = el.getAttribute('data-folder');
+      if (!folderPath) return;
+      try {
+        const readmePath = folderPath + '/Read.md';
+        const { data } = await supabase.storage.from(BUCKET).download(readmePath);
+        const text = await data.text();
+        const firstParagraph = text.split('\n\n').slice(0, 4).join('\n\n') || '';
+        el.textContent = firstParagraph.substring(0, 150);
+      } catch (err) {
+        el.textContent = '';
+      }
+    });
+  }</body>
 </html>
