@@ -122,8 +122,7 @@ const { data, error } = await supabase.storage.from(BUCKET).list(path, { limit: 
         content.innerHTML = html;
       } catch (e) {
         console.error('Error:', e);
-        content.innerHTML = `<div class="error"><strong>Ошибка:</strong><br>${e.message}</div>`;
-      }
+content.innerHTML = `<div class="error"><strong>Ошибка:</strong><br>${e.message}</div>`;      }
     }
 
     class Viewer3D {
