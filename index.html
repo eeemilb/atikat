@@ -85,8 +85,7 @@ const user = tg ? tg.initDataUnsafe?.user : null;      if (user) {
       content.innerHTML = '<div class="empty">...</div>';
       currentPath = path;
       try {
-        const { data, error } = await supabase.storage.from(BUCKET).list(path, { limit: 1000 });
-        if (error) throw error;
+const { data, error } = await supabase.storage.from(BUCKET).list(path, { limit: 1000 });        if (error) throw error;
         
         if (!data || data.length === 0) {
           content.innerHTML = `<div class="empty">Что-то пошло не так. Нет файлов и папок</div>`;
