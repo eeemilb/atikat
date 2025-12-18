@@ -68,8 +68,7 @@
     const tg = window.Telegram.WebApp;
 
     async function init() {
-      const user = tg.initDataUnsafe?.user;
-      if (user) {
+const user = tg ? tg.initDataUnsafe?.user : null;      if (user) {
         const avatar = document.getElementById('avatar');
         if (user.photo_url) {
           avatar.innerHTML = `<img src="${user.photo_url}" alt="avatar">`;
