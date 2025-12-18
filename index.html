@@ -64,7 +64,7 @@
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     const tg = window.Telegram.WebApp;
 
-    async function init() {
+    async 339) {
 const user = tg ? tg.initDataUnsafe?.user : null;      if (user) {
         const avatar = document.getElementById('avatar');
         if (user.photo_url) {
@@ -336,10 +336,7 @@ content.innerHTML = `<div class="error"><strong>Ошибка:</strong><br>${e.me
         // Initialize profile menu
       }
     // Запуск приложения
-    initTheme(); initProfileMenu();
-    document.getElementById('content').innerHTML = '<div class="empty">Инициализация...</div>';
-loadFolder('').catch(err => console.error('Load error:', err));
-    
+    init().catch(err => console.error('Init error:', err))();
      function enableItemAnimations() { const items = document.querySelectorAll('.item'); items.forEach(item => { item.addEventListener('click', function(e) { this.classList.add('item-clicked'); setTimeout(() => this.classList.remove('item-clicked'), 400); }); }); } setTimeout(enableItemAnimations, 500);
 
 function loadFolderDescriptions() {
