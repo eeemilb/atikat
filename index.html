@@ -343,7 +343,7 @@ const user = tg ? tg.initDataUnsafe?.user : null;      if (user) {
     // Запуск приложения
     initTheme(); initProfileMenu();
     document.getElementById('content').innerHTML = '<div class="empty">Инициализация...</div>';
-Promise.race([init(), new Promise((_, reject) => setTimeout(() => reject(new Error('Init timeout')), 3000))]).catch(async err => { console.error('Init failed:', err); await loadFolder(''); });
+loadFolder('').catch(err => console.error('Load error:', err));
     
      function enableItemAnimations() { const items = document.querySelectorAll('.item'); items.forEach(item => { item.addEventListener('click', function(e) { this.classList.add('item-clicked'); setTimeout(() => this.classList.remove('item-clicked'), 400); }); }); } setTimeout(enableItemAnimations, 500);
 
