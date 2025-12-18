@@ -24,7 +24,8 @@
     .item-icon { font-size: 20px; min-width: 24px; }
     .item-name { flex: 1; font-size: 14px; font-weight: 500; }
     .item-size { font-size: 12px; color: #999; }
-        .item-description { font-size: 11px; color: #ddd; margin-top: 6px; min-height: 32px; line-height: 1.4; white-space: normal; flex: 1; }    .empty { text-align: center; padding: 40px 20px; color: #999; }
+        .item-description { font-size: 11px; color: #ddd; margin-top: 6px; min-height: 32px; line-height: 1.4; white-space: normal; flex: 1; }    .empty { text-align: center; padding: 40px 20px; color: #999; max-height: 11em;
+                                                                                                                                                         }
     .error { background: #fee; padding: 12px; border-radius: 8px; color: #c33; margin: 8px 0; }
     .back-btn { padding: 8px 12px; background: #f0f0f0; border: none; border-radius: 6px; cursor: pointer; margin-bottom: 12px; }
     .viewer { margin-top: 12px; border-radius: 8px; overflow: hidden; max-height: calc(100vh - 200px); ; }
@@ -357,7 +358,7 @@ function loadFolderDescriptions() {
         const { data } = await supabase.storage.from(BUCKET).download(readmePath);
         const text = await data.text();
         const firstParagraph = text.split('\n\n').slice(0, 4).join('\n\n') || '';
-        el.textContent = firstParagraph.substring(0, 150);
+el.textContent = text;
       } catch (err) {
         el.textContent = '';
       }
