@@ -334,7 +334,9 @@ content.innerHTML = `<div class="error"><strong>Ошибка:</strong><br>${e.me
         // Initialize profile menu
       }
     // Запуск приложения
-    init().catch(err => console.error('Init error:', err))();
+    init().catch(err => console.error('Init error:', err)));
+  );
+    
      function enableItemAnimations() { const items = document.querySelectorAll('.item'); items.forEach(item => { item.addEventListener('click', function(e) { this.classList.add('item-clicked'); setTimeout(() => this.classList.remove('item-clicked'), 400); }); }); } setTimeout(enableItemAnimations, 500);
 
 function loadFolderDescriptions() {
